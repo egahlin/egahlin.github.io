@@ -62,7 +62,7 @@ In JDK 16, this restriction was lifted and JFR can now be used to monitor a remo
 
 The implementation of RemoteRecordingStream reads bytes of data from the [FlightRecorderMXBean::readStream(long)](https://docs.oracle.com/en/java/javase/16/docs/api/jdk.management.jfr/jdk/management/jfr/FlightRecorderMXBean.html#readStream(long)) method and writes it to disk locally, in chunks, similar to what the JVM does on the remote host. Another thread then parses the data on disk and dispatches events to the onEvent handlers. Once every second, new data becomes available to read.
 
-To make sure the parser thread doesn't read data before a data segment is complete, there is a size field in the chunk header that says how far into the file data can be read. Once new data arrive and a segment becomes completed, the field is updated. To make sure the size field is not modified, while being read, there is a protocol the parser must follow to avoid word tearing.
+To make sure the parser thread doesn't read data before a data segment is complete, there is a size field in the chunk header that says how far into the file data can be read. Once new data arrive and a segment becomes complete, the field is updated. To make sure the size field is not modified, while being read, there is a protocol the parser must follow to avoid word tearing.
 
 ![Remote Streaming Overview]({{ site.baseurl }}/assets/remote-streaming-architecture.png){: class="center_85" }
 

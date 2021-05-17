@@ -13,7 +13,7 @@ title: Documentation
 
 [jcmd JFR.start](https://docs.oracle.com/en/java/javase/16/docs/specs/man/jcmd.html)
 
-[-XX:StartFlightRecorder and -XX:FlightRecorderOptions](https://docs.oracle.com/en/java/javase/16/docs/specs/man/java.html)
+[-XX:StartFlightRecording and -XX:FlightRecorderOptions](https://docs.oracle.com/en/java/javase/16/docs/specs/man/java.html)
 
 [jfr tool](https://docs.oracle.com/en/java/javase/16/docs/specs/man/jfr.html)
 
