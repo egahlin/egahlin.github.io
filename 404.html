@@ -1,0 +1,73 @@
+---
+title: Page Not Found
+permalink: /404.html
+---
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	{%- include head.html -%}
+	<style>
+		h2 {
+			font-feature-settings: "lnum";
+			background-color: #ddd;
+			width: 140px;
+			height: 140px;
+			border-radius: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: center
+		}
+
+		body {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-direction: column;
+			font-size: 20px;
+			height: 80vh;
+		}
+
+        .main {
+            position: relative;
+            width: 1280px;
+            height: 640px;
+            margin: auto;
+            padding: 10px;
+        }
+
+		.d404 {
+			position: absolute;
+			width: 150px;
+			left: 150px;
+			top: 30px;
+			z-index: 5;
+		}
+
+		.dtruck {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			left: 0px;
+			top: 0px;
+			z-index: 3;
+		}
+
+		p {
+			text-align: left;
+			line-height: 2em;
+		}
+	</style>
+</head>
+
+<body>
+	<section class="main">
+		<div class="d404">
+			<h2>404</h2>
+			<p>Page not found.
+			</p>
+		</div>
+	</section>
+</body>
+
+</html>
