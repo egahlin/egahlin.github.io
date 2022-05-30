@@ -36,7 +36,7 @@ It’s also possible to pass options directly to the jfr tool, for example:
 
     $ jfr configure method-profiling=high gc=high class-loading=true 
 
-Available options depend on the JDK version. To list what is available for a JDK release do:
+Available options depend on the JDK version. Use 'help configure' to see a list:
 
     $ jfr help configure 
 
@@ -64,7 +64,7 @@ These are the options available in the default configuration (default.jfc) for J
 
       class-loading=<true|false>
 
-To use another filename than custom.jfc, specify it with the –output option:
+To use another filename than custom.jfc, specify the –output option:
 
     $ jfr configure exceptions=all –output exceptions.jfc
 
@@ -120,6 +120,8 @@ That said, most of the time it’s easier to use an option:
 The configure command can also merge settings files:
 
     $ jfr configure --input my.jfc,default.jfc --output combined.jfc
+    
+More information about the event settings syntax can be found in the API [documentation](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.jfr/jdk/jfr/package-summary.html) 
 
 ### Configure events from command line
 
@@ -141,7 +143,7 @@ The plus sign is not necessary here as it will change a setting that already exi
     
 An event may be enabled or disabled by default depending on the @Enabled annotation. All JDK events are disabled by default, but if the -XX:StartFlightRecording:settings option is not specified, a default configuration (default.jfc) will be used that will enable events that are safe to use in production.
 
-The HttpGetRequest example event above can be extended with a custom event setting, so an event is only emitted for a certain URI. See [SettingControl](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.jfr/jdk/jfr/SettingControl.html) and this [blog post by Gunnar Morling] (https://www.morling.dev/blog/rest-api-monitoring-with-custom-jdk-flight-recorder-events/).
+The HttpGetRequest example event above can be extended with a custom event setting, so an event is only emitted for a certain URI. See [SettingControl](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.jfr/jdk/jfr/SettingControl.html) and this [blog post by Gunnar Morling](https://www.morling.dev/blog/rest-api-monitoring-with-custom-jdk-flight-recorder-events/).
 
 The URI filter can then be specified on command line:
 
@@ -160,7 +162,7 @@ To reduce the stack depth to five lines, use -Xlog:jrf+event=debug. For JDK even
 
     $ java -XX:StartFlightRecording:settings=none,+com.company.HttpGetRequest#enabled=true ...
 
-Events are flushed to the log once every second by a dedicated Java thread.
+Events are flushed to the log once every second.
 
 # &nbsp; {#posts-label}
 
