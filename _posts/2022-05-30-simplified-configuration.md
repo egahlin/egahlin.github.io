@@ -20,7 +20,7 @@ The command provides an interactive mode that can configure events using options
 
 ![JMC Recording Wizard]({{ site.baseurl }}/assets/recording-wizard.png){: class="center_85" }
 
-To start interactive mode, use the --interactive flag:
+To start interactive mode, use the *--interactive* flag:
 
     $ jfr configure --interactive
 
@@ -36,7 +36,7 @@ It’s also possible to pass options directly to the jfr tool, for example:
 
     $ jfr configure method-profiling=high gc=high class-loading=true 
 
-Available options depend on the JDK version. Use 'help configure' to see a list:
+Available options depend on the JDK version. Use *help configure* to see a list:
 
     $ jfr help configure 
 
@@ -70,7 +70,7 @@ To use another filename than custom.jfc, specify the –output option:
 
     $ java -XX:StartFlightRecording:settings=exceptions.jfc
 
-If settings are changed from the default, the overhead may exceed 1% and the responsiveness of the application suffer. In particular, the memory-leaks=gc-roots option will stop all Java threads and sweep the heap when a recording ends. This could halt the application for seconds.
+If JDK event settings are changed, the overhead may exceed 1% and the responsiveness of the application suffer. In particular, the *memory-leaks=gc-roots* option will stop all Java threads and sweep the heap when a recording ends. This could halt the application for seconds.
 
 It’s also possible to change settings of individual events. This can be useful when creating user-defined events to troubleshoot an application specific issue. Don’t be afraid to add events to your application. If the event is not enabled, the implementation will be [empty](https://github.com/openjdk/jdk/blob/master/src/jdk.jfr/share/classes/jdk/jfr/Event.java). The HotSpot [C2 compiler](https://openjdk.java.net/groups/hotspot/docs/HotSpotGlossary.html) is usually able to [eliminate the event](https://youtu.be/xrdLLx6YoDM?t=1456) if the object doesn’t escape the method.
 
@@ -101,9 +101,9 @@ To add the event to a configuration file, specify the event name, followed by "#
 
 The plus sign here means that the specified setting will be added to the default set of settings.
 
-If "+" is omitted, the tool will assume an existing setting is to be changed. Since com.company.HttpGetRequest is not part of the JDK, the tool will fail with an error message. This behavior avoids the risk of creating configuration files with misspelled JDK events. 
+If "+" is omitted, the tool will assume an existing setting is to be changed. Since *com.company.HttpGetRequest* is not part of the JDK, the tool will fail with an error message. This reduces the risk of entering misspelled JDK events into configuration files.
 
-To list all available events for a JDK release, use the metadata command:
+To list all available events for a JDK release, use the *metadata* command:
 
     $ jfr metadata
 
@@ -125,7 +125,7 @@ More information about the event settings syntax can be found in the API [docume
 
 ### Configure events from command line
 
-After reading all this, you may wonder why you can’t specify options and settings directly when using -XX::StartFlightRecording.
+After reading all this, you may wonder why you can’t specify options and settings directly when using *-XX::StartFlightRecording*.
 
 You can:
 
@@ -143,9 +143,9 @@ The plus sign is not necessary here as it will change a setting that already exi
 
     $ java -XX:StartFlihtRecording:settings=none,+jdk.SocketRead#enabled=true,+jdk.SocketRead#threshold=1ms 
     
-An event may be enabled or disabled by default depending on the @Enabled annotation. All JDK events are disabled by default, but if the -XX:StartFlightRecording:settings option is not specified, a default configuration (default.jfc) will be used that will enable events that are safe to use in production.
+An event may be enabled or disabled by default depending on the *@Enabled* annotation. All JDK events are disabled by default, but if the *-XX:StartFlightRecording:settings* option is not specified, a default configuration (default.jfc) will be used that will enable events that are safe to use in production.
 
-The HttpGetRequest example event above can be extended with a custom event setting, so an event is only emitted for a certain URIs. See [SettingControl](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.jfr/jdk/jfr/SettingControl.html) and this [blog post by Gunnar Morling](https://www.morling.dev/blog/rest-api-monitoring-with-custom-jdk-flight-recorder-events/).
+The *HttpGetRequest* example event above can be extended with a custom event setting, so an event is only emitted for a certain URIs. See [SettingControl](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.jfr/jdk/jfr/SettingControl.html) and this [blog post by Gunnar Morling](https://www.morling.dev/blog/rest-api-monitoring-with-custom-jdk-flight-recorder-events/).
 
 The URI filter can then be specified on command line:
 
@@ -182,11 +182,11 @@ Example output:
     [6.227s][trace][jfr,system,event]   ]
     [6.227s][trace][jfr,system,event] }
 
-To print all user-defined events, with a full stack trace, start the JVM with -Xlog:jfr+event=trace
+To print all user-defined events, with a full stack trace, start the JVM with *-Xlog:jfr+event=trace*.
 
     $ java -Xlog:jrf+event=trace -XX:StartFlightRecording ...
 
-To reduce the stack depth to at most five lines, use -Xlog:jrf+event=debug. For JDK events, use -Xlog:jfr+system+event. To avoid noise, this feature is best used together with -XX:StartFlightRecording:settings=none and the event to debug:
+To reduce the stack depth to at most five lines, use *-Xlog:jrf+event=debug*. For JDK events, use *-Xlog:jfr+system+event*. To avoid noise, this feature is best used together with *-XX:StartFlightRecording:settings=none* and the event to debug:
 
     $ java -XX:StartFlightRecording:settings=none,+com.company.HttpGetRequest#enabled=true ...
 
