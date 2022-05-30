@@ -88,7 +88,7 @@ Here is an example of a user-defined event.
     }
     
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-     HTTPGetRequest request = new HTTPGetRequest();
+     HttpGetRequest request = new HttpGetRequest();
      request.begin();
      request.uri = req.getRequestURI();
      ...
@@ -113,11 +113,11 @@ The following commands show how socket and method sampling event settings can be
 
     $ jfr configure jdk.ExecutionSample#enabled=true jdk.ExecutionSample#period=10ms 
 
-That said, most of the time it’s easier to just use an option:
+That said, most of the time it’s easier to use an option:
 
     $ jfr configure socket-threshold=0ms method-profiling=high
 
-Options are defined in the .jfc file and it’s possible to create user-defined options that can change settings of multiple events, but how to do that is left left out for another blog post. 
+Options are defined in the .jfc file and it’s possible to create user-defined options that can change settings of multiple events. How to do that is left left for another blog post. 
 
 The configure command can also merge settings files:
 
@@ -125,21 +125,27 @@ The configure command can also merge settings files:
 
 ### Configure events from command line
 
-After reading all this, you may wonder why you can’t specify options and settings directly when using -XX::StartFlightRecording. You can:
+After reading all this, you may wonder why you can’t specify options and settings directly when using -XX::StartFlightRecording or jcmd. You can:
 
     $ java -XX:StartFlightRecording:allocation-profiling=max -jar app.jar
 
     $ java -XX:StartFlightRecording:+com.company.MyEvent#enabled=true -jar app.jar
 
-If you want to override settings of you own .jfc file you can also do that:
+If you want to override settings of a user-defined .jfc file that is also possible:
 
-    $ java -XX:StartFlightRecording:settings=my.jfc com.company.MyEvent#enabled=false -jar app.jar
+    $ java -XX:StartFlightRecording:settings=my.jfc com.company.HttpGetRequest#enabled=false -jar app.jar
 
-The plus sign is not necessary here as it will change a setting that already exists in my.jfc. To enable a single event, the option settings=none can be set, which means JFR will start without any active settings.
+The plus sign is not necessary here as it will change a setting that already exists in my.jfc. To enable a single event, the option settings=none can be set, which means JFR will start without any active settings. 
 
-    $ java -XX:StartFlihtRecording:settings=none,+com.company.MyEvent#enabled=true
+    $ java -XX:StartFlihtRecording:settings=none,+com.company.HttpGetRequest#enabled=true
 
     $ java -XX:StartFlihtRecording:settings=none,+jdk.SocketRead#enabled=true,+jdk.SocketRead#threshold=1ms 
+    
+An event may be enabled or disabled by default depending on the @Enabled annotation. All JDK events are disabled by default, but if the -XX:StartFlightRecording:settings option is not specified, a default configuration (default.jfc) will be used that will enable events that are safe to use in production.
+
+
+
+    
 
 ### Log events for debugging
 
@@ -151,7 +157,7 @@ To print all user-defined events, with a full stack trace, do the following:
 
 To reduce the stack depth to five lines, use -Xlog:jrf+event=debug. For JDK events, use -Xlog:jfr+system+event. This feature best used together -XX:StartFlightRecording:settings=none, for example:
 
-    $ java -XX:StartFlightRecording:settings=none,+com.company.MyEvent#enabled=true ...
+    $ java -XX:StartFlightRecording:settings=none,+com.company.HttpGetRequest#enabled=true ...
 
 Events are flushed to the log once every second by a dedicated Java thread.
 
