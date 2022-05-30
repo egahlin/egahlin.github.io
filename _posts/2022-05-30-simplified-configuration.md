@@ -18,25 +18,25 @@ The tool provides an interactive mode that presents the same options that can be
 
 To start the interactive mode use the --interactive flag.
 
-   $ jfr configure --interactive
+    $ jfr configure --interactive
 
 ![Interactive Mode](assets/recording-wizard.png)
 
 By default, the configuration is written to a file called custom.jfc that can be used when starting JFR from command line. 
 
-   $ java -XX:StartFlightRecording:settings=custom.jfc -jar app.jar
+    $ java -XX:StartFlightRecording:settings=custom.jfc -jar app.jar
 
 Or using jcmd:
 
-   $ jcmd <pid> JFR.start settings=custom.jfc 
+    $ jcmd <pid> JFR.start settings=custom.jfc 
 
 It’s also possible to pass argument directly to the jfr tool, for example:
 
-   $ jfr configure method-sample=high gc=high class-loading=true 
+    $ jfr configure method-sample=high gc=high class-loading=true 
 
 Available options depend on the JDK release. To list what is available for a particular release do:
 
-   $ jfr help configure 
+    $ jfr help configure 
 
 These are the options available in the default configuration for JDK 17:
 
@@ -110,8 +110,9 @@ JDK 17 also comes with capability to write events to the log. This is a develope
 
 If you want to see want to see what causes a System GC or a deptiomization.
 
-$ java -XX:StartFlightRecording:settings=none,+jdk.SystemGC#enabled=true -jar app.jar
-$ java -XX:StartFlightRecording:settings=none,+jdk.Deoptimation#enabled=true -jar app.jar
+    $ java -XX:StartFlightRecording:settings=none,+jdk.SystemGC#enabled=true -jar app.jar
+
+    $ java -XX:StartFlightRecording:settings=none,+jdk.Deoptimation#enabled=true -jar app.jar
 
 
 # &nbsp; {#posts-label}
