@@ -26,7 +26,7 @@ To start interactive mode, use the *--interactive* flag:
 
 ![Interactive Mode]({{ site.baseurl }}/assets/jfr-confguration-wizard.png){: class="center_85" }
 
-By default, the configuration is written to a file called custom.jfc. This file can be passed to [-XX:StartFlightRecording](https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html) or [jcmd](https://docs.oracle.com/en/java/javase/17/docs/specs/man/jcmd.html) when starting a recording. 
+By default, the configuration is written to a file called custom.jfc. This file can be passed to [-XX:StartFlightRecording](https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html) or [jcmd](https://docs.oracle.com/en/java/javase/17/docs/specs/man/jcmd.html) when starting a recording:
 
     $ java -XX:StartFlightRecording:settings=custom.jfc -jar app.jar
 
@@ -143,11 +143,11 @@ The plus sign is not necessary here as it will change a setting that already exi
 
     $ java -XX:StartFlihtRecording:settings=none,+jdk.SocketRead#enabled=true,+jdk.SocketRead#threshold=1ms 
     
-An event may be enabled or disabled by default depending on the *@Enabled* annotation. All JDK events are disabled by default, but if the *-XX:StartFlightRecording:settings* option is not specified, a default configuration (*default.jfc*) will be used that will enable events that are safe to use in production ( < 1% overhead). 
+An event may be enabled or disabled by default depending on the *@Enabled* annotation. All JDK events are disabled by default, but if the *-XX:StartFlightRecording:settings* option is not specified, a default configuration (*default.jfc*) will be used that will enable events that are safe to use in production (less than 1% overhead).
 
-The *HttpGetRequest* example event above can be extended with a custom event setting, so an event is only emitted for certain URIs. See [SettingControl](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.jfr/jdk/jfr/SettingControl.html) and this [blog post by Gunnar Morling](https://www.morling.dev/blog/rest-api-monitoring-with-custom-jdk-flight-recorder-events/).
+The *HttpGetRequest* event above can be extended with a custom event setting, so events are only emitted for certain URIs. See [SettingControl](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.jfr/jdk/jfr/SettingControl.html) and this [blog post by Gunnar Morling](https://www.morling.dev/blog/rest-api-monitoring-with-custom-jdk-flight-recorder-events/).
 
-To limit the number of events, the URI filter can then be specified on command line:
+The URI filter can then be specified on command line:
 
     $ java '-XX:StartFlightRecording:+com.company.HttpGetRequest#uriFilter=https://www.example.com/list/.*' 
 
