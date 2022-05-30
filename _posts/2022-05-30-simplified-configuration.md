@@ -14,13 +14,13 @@ JDK 17 was released with several improvements to JFR ergonomics. A new configure
 
 The tool provides an interactive mode that presents the same options that can be found in the JMC Recording Wizard or Template Manager.
 
-![JMC Recording Wizard](/assets/jfr-configuration-wizard.png)
+![JMC Recording Wizard]({{ site.baseurl }}/assets/recording-wizard.png){: class="center_85" }
 
 To start the interactive mode use the --interactive flag.
 
     $ jfr configure --interactive
 
-![Interactive Mode](assets/recording-wizard.png)
+![Interactive Mode]({{ site.baseurl }}/assets/jfr-confguration-wizard.png){: class="center_85" }
 
 By default, the configuration is written to a file called custom.jfc that can be used when starting JFR from command line. 
 
