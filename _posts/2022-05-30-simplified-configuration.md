@@ -66,7 +66,7 @@ These are the options available in the default configuration (*default.jfc*) for
 
 To use another filename than *custom.jfc*, specify the *–output* option:
 
-    $ jfr configure exceptions=all –output exceptions.jfc
+    $ jfr configure exceptions=all --output exceptions.jfc
 
     $ java -XX:StartFlightRecording:settings=exceptions.jfc
 
@@ -129,19 +129,19 @@ After reading all this, you may wonder why you can’t specify options and setti
 
 You can:
 
-    $ java -XX:StartFlightRecording:allocation-profiling=high -jar app.jar
+    $ java -XX:StartFlightRecording:allocation-profiling=high
 
-    $ java -XX:StartFlightRecording:+com.company.HttpGetRequest#enabled=true -jar app.jar
+    $ java -XX:StartFlightRecording:+com.company.HttpGetRequest#enabled=true
 
 It's also possible to override a user-defined *.jfc* file:
 
-    $ java -XX:StartFlightRecording:settings=http.jfc com.company.HttpGetRequest#enabled=false -jar app.jar
+    $ java -XX:StartFlightRecording:settings=http.jfc,com.company.HttpGetRequest#enabled=false
 
-The plus sign is not necessary here as it will change a setting that already exists in http.jfc. To enable a single event, the option *settings=none* can be used, which will start JFR without a default configuration (default.jfc):
+The plus sign is not necessary here as it will change a setting that already exists in *http.jfc*. To enable a single event, the option *settings=none* can be used, which will start JFR without a default configuration (default.jfc):
 
     $ java -XX:StartFlihtRecording:settings=none,+com.company.HttpGetRequest#enabled=true
 
-    $ java -XX:StartFlihtRecording:settings=none,+jdk.SocketRead#enabled=true,+jdk.SocketRead#threshold=1ms 
+    $ java -XX:StartFlihtRecording:settings=none,+jdk.SocketRead#enabled=true,+jdk.SocketRead#threshold=1ms
     
 An event may be enabled or disabled by default depending on the *@Enabled* annotation. All JDK events are disabled by default, but if the *-XX:StartFlightRecording:settings* option is not specified, a default configuration (*default.jfc*) will be used that will enable events that are safe to use in production (less than 1% overhead).
 
@@ -184,13 +184,15 @@ Example output:
 
 To print all user-defined events, with a full stack trace, start the JVM with *-Xlog:jfr+event=trace*.
 
-    $ java -Xlog:jrf+event=trace -XX:StartFlightRecording ...
+    $ java -Xlog:jfr+event=trace -XX:StartFlightRecording
 
-To reduce the stack depth to at most five frames, use *-Xlog:jrf+event=debug*. For JDK events, use *-Xlog:jfr+system+event*. To reduce the noise, this feature is best used together with *-XX:StartFlightRecording:settings=none* and the event to debug:
+To reduce the stack depth to at most five frames, use *-Xlog:jfr+event=debug*. For JDK events, use *-Xlog:jfr+system+event*. To reduce the noise, this feature is best used together with *-XX:StartFlightRecording:settings=none* and the event to debug:
 
-    $ java -XX:StartFlightRecording:settings=none,+com.company.HttpGetRequest#enabled=true ...
+    $ java -XX:StartFlightRecording:settings=none,+com.company.HttpGetRequest#enabled=true
 
 Events are flushed to the log once every second.
+
+If the JVM is shutting down, it will not wait for events to be logged before it exits.
 
 # &nbsp; {#posts-label}
 
