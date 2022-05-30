@@ -117,7 +117,7 @@ That said, most of the time it’s easier to use an option:
 
     $ jfr configure socket-threshold=0ms method-profiling=high
 
-The configure command can also merge settings files:
+The configure command can also merge configuration files:
 
     $ jfr configure --input my.jfc,default.jfc --output combined.jfc
     
@@ -125,9 +125,11 @@ More information about the event settings syntax can be found in the API [docume
 
 ### Configure events from command line
 
-After reading all this, you may wonder why you can’t specify options and settings directly when using -XX::StartFlightRecording or jcmd. You can:
+After reading all this, you may wonder why you can’t specify options and settings directly when using -XX::StartFlightRecording.
 
-    $ java -XX:StartFlightRecording:allocation-profiling=max -jar app.jar
+You can:
+
+    $ java -XX:StartFlightRecording:allocation-profiling=maximum -jar app.jar
 
     $ java -XX:StartFlightRecording:+com.company.MyEvent#enabled=true -jar app.jar
 
@@ -143,7 +145,7 @@ The plus sign is not necessary here as it will change a setting that already exi
     
 An event may be enabled or disabled by default depending on the @Enabled annotation. All JDK events are disabled by default, but if the -XX:StartFlightRecording:settings option is not specified, a default configuration (default.jfc) will be used that will enable events that are safe to use in production.
 
-The HttpGetRequest example event above can be extended with a custom event setting, so an event is only emitted for a certain URI. See [SettingControl](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.jfr/jdk/jfr/SettingControl.html) and this [blog post by Gunnar Morling](https://www.morling.dev/blog/rest-api-monitoring-with-custom-jdk-flight-recorder-events/).
+The HttpGetRequest example event above can be extended with a custom event setting, so an event is only emitted for a certain URIs. See [SettingControl](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.jfr/jdk/jfr/SettingControl.html) and this [blog post by Gunnar Morling](https://www.morling.dev/blog/rest-api-monitoring-with-custom-jdk-flight-recorder-events/).
 
 The URI filter can then be specified on command line:
 
@@ -184,7 +186,7 @@ To print all user-defined events, with a full stack trace, start the JVM with -X
 
     $ java -Xlog:jrf+event=trace -XX:StartFlightRecording ...
 
-To reduce the stack depth to at most five lines, use -Xlog:jrf+event=debug. For JDK events, use -Xlog:jfr+system+event. This feature best used together -XX:StartFlightRecording:settings=none, for example:
+To reduce the stack depth to at most five lines, use -Xlog:jrf+event=debug. For JDK events, use -Xlog:jfr+system+event. To avoid noise, this feature is best used together with -XX:StartFlightRecording:settings=none and the event to debug:
 
     $ java -XX:StartFlightRecording:settings=none,+com.company.HttpGetRequest#enabled=true ...
 
