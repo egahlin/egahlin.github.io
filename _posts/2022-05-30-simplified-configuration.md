@@ -12,7 +12,7 @@ JDK 17 was released with several improvements to JFR ergonomics.
 
 ### Configuration wizard
 
-A new configure command was added to the jfr tool.
+A new *configure* command was added to the jfr tool.
 
     $ jfr configure
 
@@ -64,7 +64,7 @@ These are the options available in the default configuration (default.jfc) for J
 
       class-loading=<true|false>
 
-To use another filename than custom.jfc, specify the –output option:
+To use another filename than custom.jfc, specify the *–output* option:
 
     $ jfr configure exceptions=all –output exceptions.jfc
 
@@ -137,7 +137,7 @@ It's also possible to override a user-defined .jfc file:
 
     $ java -XX:StartFlightRecording:settings=my.jfc com.company.HttpGetRequest#enabled=false -jar app.jar
 
-The plus sign is not necessary here as it will change a setting that already exists in my.jfc. To enable a single event, the option settings=none can be set, which means JFR will start without any active settings. 
+The plus sign is not necessary here as it will change a setting that already exists in my.jfc. To enable a single event, the option *settings=none* can be used, which will start JFR without a default configuration (default.jfc):
 
     $ java -XX:StartFlihtRecording:settings=none,+com.company.HttpGetRequest#enabled=true
 
@@ -196,7 +196,7 @@ Events are flushed to the log once every second.
 
 ## Resources
 
-[jfr tiik](https://docs.oracle.com/en/java/javase/17/docs/specs/man/jfr.html)
+[jfr tool](https://docs.oracle.com/en/java/javase/17/docs/specs/man/jfr.html)
 
 
 
