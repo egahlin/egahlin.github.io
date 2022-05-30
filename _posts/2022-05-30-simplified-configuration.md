@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Simplified configuration"
+title:  "Improved Ergdpnomic"
 author:  "ErikGahlin"
 date:   2022-05-30 08:10:24 +0200
 image:  "/assets/jfr-configuration-wizard.png"
@@ -8,39 +8,39 @@ published: false
 tags: [JFR, JDK 17, Ergonomics]
 ---
 
-JDK 17 was released with several improvements to JFR ergonomics. A new configure command was added to the jfr-tool.
+JDK 17 was released with several improvements to JFR ergonomics. 
+
+### Configuration wizard
+
+A new configure command was added to the jfr-tool.
 
     $ jfr configure
 
-The tool provides an interactive mode that presents the same options that can be found in the JMC Recording Wizard or Template Manager.
+The command provides an interactive mode that can configure events using options previously only available in the JMC Recording Wizard or Template Manager.
 
 ![JMC Recording Wizard]({{ site.baseurl }}/assets/recording-wizard.png){: class="center_85" }
 
-To start the interactive mode use the --interactive flag.
+To start interactive mode, use the --interactive flag:
 
     $ jfr configure --interactive
 
 ![Interactive Mode]({{ site.baseurl }}/assets/jfr-confguration-wizard.png){: class="center_85" }
 
-By default, the configuration is written to a file called custom.jfc that can be used when starting JFR from command line. 
+By default, the configuration is written to a file called custom.jfc. The file can be passed to -XX:StartFlightRecording or [jcmd](https://docs.oracle.com/en/java/javase/17/docs/specs/man/jcmd.html) when starting a recording. 
 
     $ java -XX:StartFlightRecording:settings=custom.jfc -jar app.jar
 
-Or using jcmd:
-
     $ jcmd <pid> JFR.start settings=custom.jfc 
 
-It’s also possible to pass argument directly to the jfr tool, for example:
+It’s also possible to pass options directly to the jfr tool, for example:
 
-    $ jfr configure method-sample=high gc=high class-loading=true 
+    $ jfr configure method-profiling=high gc=high class-loading=true 
 
-Available options depend on the JDK release. To list what is available for a particular release do:
+Available options depend on the JDK version. To list what is available for a JDK release do:
 
     $ jfr help configure 
 
-These are the options available in the default configuration for JDK 17:
-
-    Options for default.jfc:
+These are the options available in the default configuration (default.jfc) for JDK 17/18.
 
       gc=<off|normal|detailed|high|all>
 
@@ -66,54 +66,71 @@ These are the options available in the default configuration for JDK 17:
 
 You can set another filename than the default with the –output option:
 
-    $ jfr configure allocation-profiling=maxium –output max-allocation.jfr
+    $ jfr configure allocation-profiling=maximum –output max-allocation.jfc
 
     $ java -XX:StartFlightRecording:settings=max-allocation.jfc
 
-It’s also possible to change the settings of individual events. This can be useful if you create your own events and want to troubleshoot a particular issue. Don’t be afraid to add your own events. If the event is not enabled, the implementation will empty. See https://github.com/openjdk/jdk/blob/master/src/jdk.jfr/share/classes/jdk/jfr/Event.java . C2 compiler is usually able to eliminate all occurrence of the event if the event object doesn’t escape the method. 
+If settings are changed, the overhead may exceed 1% and the responsiveness of the application may suffer. In particular, the gc-roots alternative will stop all Java threads and sweep the heap when a recording ends. This could potentially halt the application for several seconds.
+
+It’s also possible to change settings of individual events. This can be useful when creating user-defined events to troubleshoot an application specific issue. Don’t be afraid to add events to your application. If the event is not enabled, the implementation will be [empty](https://github.com/openjdk/jdk/blob/master/src/jdk.jfr/share/classes/jdk/jfr/Event.java). The HotSpot [C2 compiler](https://openjdk.java.net/groups/hotspot/docs/HotSpotGlossary.html) is usually able to [eliminate the event](https://youtu.be/xrdLLx6YoDM?t=1456) if the event object doesn’t escape the method. 
 
     $ jfr configure +com.company.MyEvent#enabled=true
 
-The plus sign means that the specified setting will be added to the default set of settings. If you omit the ‘+’ sign, the tool will assume you want to change settings in the default configuration (default.jfc) and since the JDK doesn’t contain an event called com.company.MyEvent, it will fail with an error message.  If you want to change the setting of default configuration , the plus sign is not needed, for example:
+The plus sign here means that the specified setting will be added to the default set of settings.
 
-    $ jfr configure jdk.SocketRead#threshold=0ms jdk.SocketWrite#threshold=0ms
+If '+' is omitted, the tool will assume an existing setting is to be changed. Since com.company.MyEvent is not included in the JDK, the tool will fail with an error message. This avoids the risk of creating configuration files with misspelled JDK events. 
 
-That said, most of the time, it’s easier to just change a predefined option:
+To list all available events for a JDK release, execute the following command:
 
-    $ jfr configure socket-threshold=0ms
+    $ jfr metadata
 
-The predefined options are defined in the .jfc file and it’s possible to create your own options where you can change settings of multiple events at the same time.
+The following commands show socket and method sampling event settings can be configured individually:
 
-    $ jfr configure –input my.jfc –output verbode.jfc verbosity=high 
+    $ jfr configure jdk.SocketRead#enabled=0ms jdk.SocketWrite#threshold=0ms jdk.SocketWrite#stackTrace=true
 
-How to create your own options will be left to another blog post. 
+    $ jfr configure jdk.ExecutionSample#enabled=true jdk.ExecutionSample#period=10ms 
 
-After reading all this, you may wonder why you can’t specify the options and settings directly using -XX::StartFlightRecording and jcmd JFR.start. You can, for example:
+That said, most of the time it’s easier to just use an option:
 
-    $ java -XX:StartFlightRecording:allocation-profiling=maximum -jar app.jar
+    $ jfr configure socket-threshold=0ms method-profiling=high
 
-    $ java -XX:StartFlightRecording:+com.company.MyEvent#enabled=true -jaryapp.jar
+Options are defined in the .jfc file and it’s possible to create user-defined options that can change settings of multiple events, but how to do that is left left out for another blog post. 
+
+The configure command can also merge settings files:
+
+    4 jfr configure --input my.jfc,default.jfc --output combined.jfc
+
+### Configure events from command line
+
+After reading all this, you may wonder why you can’t specify the options and settings directly when using -XX::StartFlightRecording. You can:
+
+    $ java -XX:StartFlightRecording:allocation-profiling=max -jar app.jar
+
+    $ java -XX:StartFlightRecording:+com.company.MyEvent#enabled=true -jar app.jar
 
 If you want to override settings of you own .jfc file you can also do that:
 
     $ java -XX:StartFlightRecording:settings=my.jfc com.company.MyEvent#enabled=false -jar app.jar
 
-The plus sign is not needed here as you will be changing a setting that already exist. When developing events, or only want to use one specific event, you set can settings=none, which means JFR will start from an blank slate.
+The plus sign is not necessary here as it will change a setting that already exists in my.jfc. To enable a single event, the option settings=none can be set, which means JFR will start from a blank slate.
 
-    $ java -XX:StartFlihtRecording:settings=none,+com.company.MyEvent#enabled=false
+    $ java -XX:StartFlihtRecording:settings=none,+com.company.MyEvent#enabled=true
 
-    $ java -XX:StartFlihtRecording:settings=none,+jdk.SocketRead#enabled=true,
+    $ java -XX:StartFlihtRecording:settings=none,+jdk.SocketRead#enabled=true,+jdk.SocketRead#threshold=1ms 
 
-JDK 17 also comes with capability to write events to the log. This is a developer features and not mean for production use due to the overhead. If you have your own event called com.company.MyEvent and want to write it to standard out:
+### Log events for debugging
 
-    $ java -XX:StartFlightRecording:settings=none,+com.company.MyEvent#enabled=true -jar app.jar
+JDK 17 also comes with the capability to write events to the log. This is a debug feature and not meant for production use due to the high overhead of formatting the output and printing events while holding a lock.
 
-If you want to see want to see what causes a System GC or a deptiomization.
+To print all user-defined events, with a full stack trace, do the following:
 
-    $ java -XX:StartFlightRecording:settings=none,+jdk.SystemGC#enabled=true -jar app.jar
+    $ java -Xlog:jrf+event=trace -XX:StartFlightRecording ...
 
-    $ java -XX:StartFlightRecording:settings=none,+jdk.Deoptimation#enabled=true -jar app.jar
+To reduce the stack depth to five lines, use -Xlog:jrf+event=debug. For JDK events, use -Xlog:jfr+system+event. This feature best used together -XX:StartFlightRecording:settings=none and the event to debug, for example:
 
+    $ java -XX:StartFlightRecording:settings=none,+com.company.MyEvent#enabled=true ...
+
+Events are flushed to the log once every second.
 
 # &nbsp; {#posts-label}
 
