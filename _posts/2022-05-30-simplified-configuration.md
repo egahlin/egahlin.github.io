@@ -95,13 +95,13 @@ Here is an example of a user-defined event.
      request.commit();
     }
     
-To add the event to a configuration file, specify the name event and a key-value pair separated by '#'. 
+To add the event to a configuration file, specify the event name, followed by a '#' and a key-value pair.
     
     $ jfr configure +com.company.HttpGetRequest#enabled=true
 
 The plus sign here means that the specified setting will be added to the default set of settings.
 
-If '+' is omitted, the tool will assume an existing setting is to be changed. Since com.company.HttpGetRequest is not part of the JDK, the tool will fail with an error message. This avoids the risk of creating configuration files with misspelled JDK events. 
+If '+' is omitted, the tool will assume an existing setting is to be changed. Since com.company.HttpGetRequest is not part of the JDK, the tool will fail with an error message. This behavior  avoids the risk of creating configuration files with misspelled JDK events. 
 
 To list all available events for a JDK release, use the metadata command:
 
@@ -117,8 +117,6 @@ That said, most of the time it’s easier to use an option:
 
     $ jfr configure socket-threshold=0ms method-profiling=high
 
-Options are defined in the .jfc file and it’s possible to create user-defined options that can change settings of multiple events. How to do that is left left for another blog post. 
-
 The configure command can also merge settings files:
 
     $ jfr configure --input my.jfc,default.jfc --output combined.jfc
@@ -131,7 +129,7 @@ After reading all this, you may wonder why you can’t specify options and setti
 
     $ java -XX:StartFlightRecording:+com.company.MyEvent#enabled=true -jar app.jar
 
-If you want to override settings of a user-defined .jfc file that is also possible:
+It's also possible to override a user-defined .jfc file:
 
     $ java -XX:StartFlightRecording:settings=my.jfc com.company.HttpGetRequest#enabled=false -jar app.jar
 
@@ -143,9 +141,12 @@ The plus sign is not necessary here as it will change a setting that already exi
     
 An event may be enabled or disabled by default depending on the @Enabled annotation. All JDK events are disabled by default, but if the -XX:StartFlightRecording:settings option is not specified, a default configuration (default.jfc) will be used that will enable events that are safe to use in production.
 
+The HttpGetRequest example event above can be extended with a custom event setting, so an event is only emitted for a certain URI. See [SettingControl](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.jfr/jdk/jfr/SettingControl.html) and this [blog post by Gunnar Morling] (https://www.morling.dev/blog/rest-api-monitoring-with-custom-jdk-flight-recorder-events/).
 
+The URI filter can then be specified on command line:
 
-    
+    $ java '-XX:StartFlightRecording:com.company.HttpGetRequest#uriFilter=https://www.example.com/list/.*' 
+
 
 ### Log events for debugging
 
