@@ -51,8 +51,9 @@ To start interactive mode, use the *--interactive* flag:
     2. Normal
     3. Detailed
     4. All
+    
+    ...
 
-![Interactive Mode]({{ site.baseurl }}/assets/jfr-confguration-wizard.png){: class="center_85" }
 
 By default, the configuration is written to a file called custom.jfc. This file can be passed to [-XX:StartFlightRecording](https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html) or [jcmd](https://docs.oracle.com/en/java/javase/17/docs/specs/man/jcmd.html) when starting a recording:
 
