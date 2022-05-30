@@ -147,18 +147,18 @@ The HttpGetRequest example event above can be extended with a custom event setti
 
 The URI filter can then be specified on command line:
 
-    $ java '-XX:StartFlightRecording:com.company.HttpGetRequest#uriFilter=https://www.example.com/list/.*' 
+    $ java '-XX:StartFlightRecording:+com.company.HttpGetRequest#uriFilter=https://www.example.com/list/.*' 
 
 
 ### Log events for debugging
 
 JDK 17 also comes with the capability to write events to the JVM [log](https://openjdk.java.net/jeps/158). This is a debug feature and not meant for production use due to the high overhead of formatting the output and printing events while holding a lock.
 
-To print all user-defined events, with a full stack trace, do the following:
+To print all user-defined events, with a full stack trace, start the JVM with -Xlog:jfr+event=trace
 
     $ java -Xlog:jrf+event=trace -XX:StartFlightRecording ...
 
-To reduce the stack depth to five lines, use -Xlog:jrf+event=debug. For JDK events, use -Xlog:jfr+system+event. This feature best used together -XX:StartFlightRecording:settings=none, for example:
+To reduce the stack depth to at most five lines, use -Xlog:jrf+event=debug. For JDK events, use -Xlog:jfr+system+event. This feature best used together -XX:StartFlightRecording:settings=none, for example:
 
     $ java -XX:StartFlightRecording:settings=none,+com.company.HttpGetRequest#enabled=true ...
 
