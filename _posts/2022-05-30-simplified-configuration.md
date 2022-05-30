@@ -154,15 +154,7 @@ The URI filter can then be specified on command line:
 
 JDK 17 also comes with the capability to write events to the JVM [log](https://openjdk.java.net/jeps/158). This is a debug feature and not meant for production use due to the high overhead of formatting the output and printing events while holding a lock.
 
-To print all user-defined events, with a full stack trace, start the JVM with -Xlog:jfr+event=trace
-
-    $ java -Xlog:jrf+event=trace -XX:StartFlightRecording ...
-
-To reduce the stack depth to at most five lines, use -Xlog:jrf+event=debug. For JDK events, use -Xlog:jfr+system+event. This feature best used together -XX:StartFlightRecording:settings=none, for example:
-
-    $ java -XX:StartFlightRecording:settings=none,+com.company.HttpGetRequest#enabled=true ...
-
-Events are flushed to the log once every second.
+Example output:
 
     [6.227s][trace][jfr,system,event] jdk.ThreadCPULoad {
     [6.227s][trace][jfr,system,event]   startTime = 18:19:27.820 (2022-05-30)
@@ -187,6 +179,16 @@ Events are flushed to the log once every second.
     [6.227s][trace][jfr,system,event]     sun.awt.image.ImageFetcher.run() line: 176
     [6.227s][trace][jfr,system,event]   ]
     [6.227s][trace][jfr,system,event] }
+
+To print all user-defined events, with a full stack trace, start the JVM with -Xlog:jfr+event=trace
+
+    $ java -Xlog:jrf+event=trace -XX:StartFlightRecording ...
+
+To reduce the stack depth to at most five lines, use -Xlog:jrf+event=debug. For JDK events, use -Xlog:jfr+system+event. This feature best used together -XX:StartFlightRecording:settings=none, for example:
+
+    $ java -XX:StartFlightRecording:settings=none,+com.company.HttpGetRequest#enabled=true ...
+
+Events are flushed to the log once every second.
 
 # &nbsp; {#posts-label}
 
