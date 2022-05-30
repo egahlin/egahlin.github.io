@@ -23,6 +23,34 @@ The command provides an interactive mode that can configure events using options
 To start interactive mode, use the *--interactive* flag:
 
     $ jfr configure --interactive
+    ============== .jfc Configuration Wizard ============
+    This wizard will generate a JFR configuration file by
+    asking 12 questions. Press ENTER to use the default
+    value, or type Q to abort the wizard.
+    
+    Garbage Collector: Normal (default)
+    1. Off
+    2. Normal
+    3. Detailed
+    4. High, incl. TLABs/PLABs (may cause many events)
+    5. All, incl. Heap Statistics (may cause long GCs)
+    
+    Using default: Normal
+    
+    Allocation Profiling: Low (default)
+    1. Off
+    2. Low
+    3. Medium
+    4. High
+    5. Maximum
+    
+    Using default: Low
+    
+    Compiler: Normal (default)
+    1. Off
+    2. Normal
+    3. Detailed
+    4. All
 
 ![Interactive Mode]({{ site.baseurl }}/assets/jfr-confguration-wizard.png){: class="center_85" }
 
