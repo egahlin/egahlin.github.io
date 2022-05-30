@@ -32,7 +32,7 @@ By default, the configuration is written to a file called custom.jfc. This file 
 
     $ jcmd <pid> JFR.start settings=custom.jfc 
 
-It’s possible to pass options directly to the jfr tool without using the wizard, for example:
+It’s possible to specify options without using the wizard, for example:
 
     $ jfr configure method-profiling=high gc=high class-loading=true 
 
@@ -40,7 +40,7 @@ Available options depend on the JDK version. Use *help configure* to see a list:
 
     $ jfr help configure 
 
-These are the options available in the default configuration (default.jfc) for JDK 17/18:
+These are the options available in the default configuration (*default.jfc*) for JDK 17/18:
 
       gc=<off|normal|detailed|high|all>
 
@@ -64,7 +64,7 @@ These are the options available in the default configuration (default.jfc) for J
 
       class-loading=<true|false>
 
-To use another filename than custom.jfc, specify the *–output* option:
+To use another filename than *custom.jfc*, specify the *–output* option:
 
     $ jfr configure exceptions=all –output exceptions.jfc
 
@@ -133,7 +133,7 @@ You can:
 
     $ java -XX:StartFlightRecording:+com.company.HttpGetRequest#enabled=true -jar app.jar
 
-It's also possible to override a user-defined .jfc file:
+It's also possible to override a user-defined *.jfc* file:
 
     $ java -XX:StartFlightRecording:settings=my.jfc com.company.HttpGetRequest#enabled=false -jar app.jar
 
@@ -143,11 +143,11 @@ The plus sign is not necessary here as it will change a setting that already exi
 
     $ java -XX:StartFlihtRecording:settings=none,+jdk.SocketRead#enabled=true,+jdk.SocketRead#threshold=1ms 
     
-An event may be enabled or disabled by default depending on the *@Enabled* annotation. All JDK events are disabled by default, but if the *-XX:StartFlightRecording:settings* option is not specified, a default configuration (default.jfc) will be used that will enable events that are safe to use in production ( < 1% overhead). 
+An event may be enabled or disabled by default depending on the *@Enabled* annotation. All JDK events are disabled by default, but if the *-XX:StartFlightRecording:settings* option is not specified, a default configuration (*default.jfc*) will be used that will enable events that are safe to use in production ( < 1% overhead). 
 
 The *HttpGetRequest* example event above can be extended with a custom event setting, so an event is only emitted for certain URIs. See [SettingControl](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.jfr/jdk/jfr/SettingControl.html) and this [blog post by Gunnar Morling](https://www.morling.dev/blog/rest-api-monitoring-with-custom-jdk-flight-recorder-events/).
 
-The URI filter can then be specified on command line to limit the number of events:
+To limit the number of events, the URI filter can then be specified on command line:
 
     $ java '-XX:StartFlightRecording:+com.company.HttpGetRequest#uriFilter=https://www.example.com/list/.*' 
 
