@@ -32,7 +32,7 @@ By default, the configuration is written to a file called custom.jfc. This file 
 
     $ jcmd <pid> JFR.start settings=custom.jfc 
 
-It’s possible to specify options without using the wizard, for example:
+Options can also be configured without using the interactive wizard, for example:
 
     $ jfr configure method-profiling=high gc=high class-loading=true 
 
@@ -72,7 +72,7 @@ To use another filename than *custom.jfc*, specify the *–output* option:
 
 If JDK event settings are changed, the overhead could exceed 1% and the responsiveness of the application may suffer. In particular, the *memory-leaks=gc-roots* option will stop all Java threads and sweep the heap when a recording ends. This could halt the application for seconds.
 
-It’s also possible to change settings of individual events. This can be useful when creating user-defined events to troubleshoot an application specific issue. Don’t be afraid to add events to your application. If the event is not enabled, the implementation will be [empty](https://github.com/openjdk/jdk/blob/master/src/jdk.jfr/share/classes/jdk/jfr/Event.java). The HotSpot [C2 compiler](https://openjdk.java.net/groups/hotspot/docs/HotSpotGlossary.html) is usually able to [eliminate the event](https://youtu.be/xrdLLx6YoDM?t=1456) if the object doesn’t escape the method.
+The *configure* command can also change settings of individual events. This can be useful when creating user-defined events to troubleshoot an application specific issue. Don’t worry too much about overhead when adding events to your application. If the event is disabled, the implementation will be [empty](https://github.com/openjdk/jdk/blob/master/src/jdk.jfr/share/classes/jdk/jfr/Event.java). The HotSpot [C2 compiler](https://openjdk.java.net/groups/hotspot/docs/HotSpotGlossary.html) is usually able to [eliminate the event](https://youtu.be/xrdLLx6YoDM?t=1456) if the object doesn’t escape the method.
 
 Here is an example of a user-defined event:
 
@@ -97,7 +97,7 @@ Here is an example of a user-defined event:
     
 To add the event to a configuration file, specify the event name, followed by "#" and a key-value pair:
     
-    $ jfr configure +com.company.HttpGetRequest#enabled=true
+    $ jfr configure +com.company.HttpGetRequest#enabled=true --output http.jfc
 
 The plus sign here means that the specified setting will be added to the default set of settings.
 
@@ -123,7 +123,7 @@ The configure command can also merge configuration files:
     
 More information about the event settings syntax can be found in the API [documentation](https://docs.oracle.com/en/java/javase/17/docs/api/jdk.jfr/jdk/jfr/package-summary.html) 
 
-### Configure events from command line
+### Configure events on command line
 
 After reading all this, you may wonder why you can’t specify options and settings directly when using *-XX::StartFlightRecording*.
 
@@ -135,9 +135,9 @@ You can:
 
 It's also possible to override a user-defined *.jfc* file:
 
-    $ java -XX:StartFlightRecording:settings=my.jfc com.company.HttpGetRequest#enabled=false -jar app.jar
+    $ java -XX:StartFlightRecording:settings=http.jfc com.company.HttpGetRequest#enabled=false -jar app.jar
 
-The plus sign is not necessary here as it will change a setting that already exists in my.jfc. To enable a single event, the option *settings=none* can be used, which will start JFR without a default configuration (default.jfc):
+The plus sign is not necessary here as it will change a setting that already exists in http.jfc. To enable a single event, the option *settings=none* can be used, which will start JFR without a default configuration (default.jfc):
 
     $ java -XX:StartFlihtRecording:settings=none,+com.company.HttpGetRequest#enabled=true
 
