@@ -12,11 +12,11 @@ JDK 17 was released with several improvements to JFR ergonomics.
 
 ### Configuration wizard
 
-A new configure command was added to the jfr-tool.
+A new configure command was added to the jfr tool.
 
     $ jfr configure
 
-The command provides an interactive mode that can configure events using options previously only available in the JMC Recording Wizard or Template Manager.
+The command provides an interactive mode that can configure events using options previously only available in the [JMC](https://www.oracle.com/java/technologies/javase/products-jmc8-downloads.html) Recording Wizard.
 
 ![JMC Recording Wizard]({{ site.baseurl }}/assets/recording-wizard.png){: class="center_85" }
 
@@ -64,15 +64,15 @@ These are the options available in the default configuration (default.jfc) for J
 
       class-loading=<true|false>
 
-You can set another filename than the default with the –output option:
+Another filename that the default can be set with the –output option:
 
     $ jfr configure allocation-profiling=maximum –output max-allocation.jfc
 
     $ java -XX:StartFlightRecording:settings=max-allocation.jfc
 
-If settings are changed, the overhead may exceed 1% and the responsiveness of the application may suffer. In particular, the gc-roots alternative will stop all Java threads and sweep the heap when a recording ends. This could potentially halt the application for several seconds.
+If settings are changed, the overhead may exceed 1% and the responsiveness of the application suffer. In particular, the memory-leaks=gc-roots option will stop all Java threads and sweep the heap when a recording ends. This could halt the application for seconds.
 
-It’s also possible to change settings of individual events. This can be useful when creating user-defined events to troubleshoot an application specific issue. Don’t be afraid to add events to your application. If the event is not enabled, the implementation will be [empty](https://github.com/openjdk/jdk/blob/master/src/jdk.jfr/share/classes/jdk/jfr/Event.java). The HotSpot [C2 compiler](https://openjdk.java.net/groups/hotspot/docs/HotSpotGlossary.html) is usually able to [eliminate the event](https://youtu.be/xrdLLx6YoDM?t=1456) if the event object doesn’t escape the method. 
+It’s also possible to change settings of individual events. This can be useful when creating user-defined events to troubleshoot an application specific issue. Don’t be afraid to add events to your application. If the event is not enabled, the implementation will be [empty](https://github.com/openjdk/jdk/blob/master/src/jdk.jfr/share/classes/jdk/jfr/Event.java). The HotSpot [C2 compiler](https://openjdk.java.net/groups/hotspot/docs/HotSpotGlossary.html) is usually able to [eliminate the event](https://youtu.be/xrdLLx6YoDM?t=1456) if the object doesn’t escape the method.
 
     $ jfr configure +com.company.MyEvent#enabled=true
 
@@ -120,17 +120,17 @@ The plus sign is not necessary here as it will change a setting that already exi
 
 ### Log events for debugging
 
-JDK 17 also comes with the capability to write events to the log. This is a debug feature and not meant for production use due to the high overhead of formatting the output and printing events while holding a lock.
+JDK 17 also comes with the capability to write events to the JVM [log](https://openjdk.java.net/jeps/158). This is a debug feature and not meant for production use due to the high overhead of formatting the output and printing events while holding a lock.
 
 To print all user-defined events, with a full stack trace, do the following:
 
     $ java -Xlog:jrf+event=trace -XX:StartFlightRecording ...
 
-To reduce the stack depth to five lines, use -Xlog:jrf+event=debug. For JDK events, use -Xlog:jfr+system+event. This feature best used together -XX:StartFlightRecording:settings=none and the event to debug, for example:
+To reduce the stack depth to five lines, use -Xlog:jrf+event=debug. For JDK events, use -Xlog:jfr+system+event. This feature best used together -XX:StartFlightRecording:settings=none, for example:
 
     $ java -XX:StartFlightRecording:settings=none,+com.company.MyEvent#enabled=true ...
 
-Events are flushed to the log once every second.
+Events are flushed to the log once every second by dedicated Java thread.
 
 # &nbsp; {#posts-label}
 
