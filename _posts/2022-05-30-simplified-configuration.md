@@ -168,7 +168,7 @@ Events are flushed to the log once every second.
     [6.227s][trace][jfr,system,event]   startTime = 18:19:27.820 (2022-05-30)
     [6.227s][trace][jfr,system,event]   user = 0,08%
     [6.227s][trace][jfr,system,event]   system = 0,00%
-    [6.227s][trace][jfr,system,event]   eventThread = "Image Fetcher 0" (javaThreadId = 37, virtual = false)
+    [6.227s][trace][jfr,system,event]   eventThread = "Image Fetcher 0" (javaThreadId = 37)
     [6.227s][trace][jfr,system,event] }
     [6.227s][trace][jfr,system,event] jdk.JavaMonitorWait {
     [6.227s][trace][jfr,system,event]   startTime = 18:19:22.816 (2022-05-30)
@@ -178,7 +178,7 @@ Events are flushed to the log once every second.
     [6.227s][trace][jfr,system,event]   timeout = 5,00 s
     [6.227s][trace][jfr,system,event]   timedOut = true
     [6.227s][trace][jfr,system,event]   address = 0x600002146700
-    [6.227s][trace][jfr,system,event]   eventThread = "Image Fetcher 1" (javaThreadId = 38, virtual = false)
+    [6.227s][trace][jfr,system,event]   eventThread = "Image Fetcher 1" (javaThreadId = 38)
     [6.227s][trace][jfr,system,event]   stackTrace = [
     [6.227s][trace][jfr,system,event]     java.lang.Object.wait0(long)
     [6.227s][trace][jfr,system,event]     java.lang.Object.wait(long) line: 366
