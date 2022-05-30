@@ -95,13 +95,13 @@ Here is an example of a user-defined event.
      request.commit();
     }
     
-To add the event to a configuration file, specify the event name, followed by a '#' and a key-value pair.
+To add the event to a configuration file, specify the event name, followed by "#" and a key-value pair.
     
     $ jfr configure +com.company.HttpGetRequest#enabled=true
 
 The plus sign here means that the specified setting will be added to the default set of settings.
 
-If '+' is omitted, the tool will assume an existing setting is to be changed. Since com.company.HttpGetRequest is not part of the JDK, the tool will fail with an error message. This behavior  avoids the risk of creating configuration files with misspelled JDK events. 
+If "+" is omitted, the tool will assume an existing setting is to be changed. Since com.company.HttpGetRequest is not part of the JDK, the tool will fail with an error message. This behavior avoids the risk of creating configuration files with misspelled JDK events. 
 
 To list all available events for a JDK release, use the metadata command:
 
@@ -163,6 +163,30 @@ To reduce the stack depth to at most five lines, use -Xlog:jrf+event=debug. For 
     $ java -XX:StartFlightRecording:settings=none,+com.company.HttpGetRequest#enabled=true ...
 
 Events are flushed to the log once every second.
+
+    [6.227s][trace][jfr,system,event] jdk.ThreadCPULoad {
+    [6.227s][trace][jfr,system,event]   startTime = 18:19:27.820 (2022-05-30)
+    [6.227s][trace][jfr,system,event]   user = 0,08%
+    [6.227s][trace][jfr,system,event]   system = 0,00%
+    [6.227s][trace][jfr,system,event]   eventThread = "Image Fetcher 0" (javaThreadId = 37, virtual = false)
+    [6.227s][trace][jfr,system,event] }
+    [6.227s][trace][jfr,system,event] jdk.JavaMonitorWait {
+    [6.227s][trace][jfr,system,event]   startTime = 18:19:22.816 (2022-05-30)
+    [6.227s][trace][jfr,system,event]   duration = 5,01 s
+    [6.227s][trace][jfr,system,event]   monitorClass = java.util.Vector (classLoader = bootstrap)
+    [6.227s][trace][jfr,system,event]   notifier = N/A
+    [6.227s][trace][jfr,system,event]   timeout = 5,00 s
+    [6.227s][trace][jfr,system,event]   timedOut = true
+    [6.227s][trace][jfr,system,event]   address = 0x600002146700
+    [6.227s][trace][jfr,system,event]   eventThread = "Image Fetcher 1" (javaThreadId = 38, virtual = false)
+    [6.227s][trace][jfr,system,event]   stackTrace = [
+    [6.227s][trace][jfr,system,event]     java.lang.Object.wait0(long)
+    [6.227s][trace][jfr,system,event]     java.lang.Object.wait(long) line: 366
+    [6.227s][trace][jfr,system,event]     sun.awt.image.ImageFetcher.nextImage() line: 154
+    [6.227s][trace][jfr,system,event]     sun.awt.image.ImageFetcher.fetchloop() line: 207
+    [6.227s][trace][jfr,system,event]     sun.awt.image.ImageFetcher.run() line: 176
+    [6.227s][trace][jfr,system,event]   ]
+    [6.227s][trace][jfr,system,event] }
 
 # &nbsp; {#posts-label}
 
