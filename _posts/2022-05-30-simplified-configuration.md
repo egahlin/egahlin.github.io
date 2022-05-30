@@ -74,11 +74,34 @@ If settings are changed from the default, the overhead may exceed 1% and the res
 
 It’s also possible to change settings of individual events. This can be useful when creating user-defined events to troubleshoot an application specific issue. Don’t be afraid to add events to your application. If the event is not enabled, the implementation will be [empty](https://github.com/openjdk/jdk/blob/master/src/jdk.jfr/share/classes/jdk/jfr/Event.java). The HotSpot [C2 compiler](https://openjdk.java.net/groups/hotspot/docs/HotSpotGlossary.html) is usually able to [eliminate the event](https://youtu.be/xrdLLx6YoDM?t=1456) if the object doesn’t escape the method.
 
-    $ jfr configure +com.company.MyEvent#enabled=true
+Here is an example of a user-defined event.
+
+    @Name("com.company.HttpGetRequest")
+    @Label("HTTP GET Request")
+    @Category("HTTP")
+    @Enabled(false)
+    @StackTrace(false)
+    @Threshold("0 ms")
+    public class HttpGetRequest extends jdk.jfr.Event {
+      @Label("Request URI")
+      String uri;
+    }
+    
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+     HTTPGetRequest request = new HTTPGetRequest();
+     request.begin();
+     request.uri = req.getRequestURI();
+     ...
+     request.commit();
+    }
+    
+To add the event to a configuration file, specify the name event and a key-value pair separated by '#'. 
+    
+    $ jfr configure +com.company.HttpGetRequest#enabled=true
 
 The plus sign here means that the specified setting will be added to the default set of settings.
 
-If '+' is omitted, the tool will assume an existing setting is to be changed. Since com.company.MyEvent is not included in the JDK, the tool will fail with an error message. This avoids the risk of creating configuration files with misspelled JDK events. 
+If '+' is omitted, the tool will assume an existing setting is to be changed. Since com.company.HttpGetRequest is not part of the JDK, the tool will fail with an error message. This avoids the risk of creating configuration files with misspelled JDK events. 
 
 To list all available events for a JDK release, use the metadata command:
 
@@ -112,7 +135,7 @@ If you want to override settings of you own .jfc file you can also do that:
 
     $ java -XX:StartFlightRecording:settings=my.jfc com.company.MyEvent#enabled=false -jar app.jar
 
-The plus sign is not necessary here as it will change a setting that already exists in my.jfc. To enable a single event, the option settings=none can be set, which means JFR will start from a blank slate.
+The plus sign is not necessary here as it will change a setting that already exists in my.jfc. To enable a single event, the option settings=none can be set, which means JFR will start without any active settings.
 
     $ java -XX:StartFlihtRecording:settings=none,+com.company.MyEvent#enabled=true
 
