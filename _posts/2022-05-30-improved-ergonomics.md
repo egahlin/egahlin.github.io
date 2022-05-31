@@ -167,7 +167,7 @@ More information about the event settings syntax can be found in the API [docume
 
 ### Configure events on command line
 
-After reading all this, you may wonder why you can’t specify options and settings directly when using -XX::StartFlightRecording?
+After reading all this, you may wonder why you can’t specify options and settings directly when using -XX:StartFlightRecording?
 
 *You can!*
 
