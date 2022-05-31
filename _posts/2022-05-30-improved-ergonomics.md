@@ -112,7 +112,7 @@ To explicitly control the name of the output file, i.e. to use a name other than
 
     $ java -XX:StartFlightRecording:settings=exceptions.jfc
 
-Please remember that if JDK event settings are changed to something other than the default, the overhead could exceed 1%, and the application's responsiveness may suffer. For example, the *memory-leaks=gc-roots* option will stop all Java threads and sweep the heap when a recording ends. This could halt the application for seconds. Always test to ensure that your custom settings are acceptable from an overhead perspective before using them in production.
+Please remember that if JDK event settings are changed to something other than the default, the overhead could exceed 1%, and the application's responsiveness may suffer. For example, the *memory-leaks=gc-roots* option will stop all Java threads and sweep the heap when a recording ends. This could halt the application for seconds. Always test your configuration to ensure that it is  acceptabl from an overhead perspective before using it in production.
 
 The *configure* command can also change settings of individual events. This can be useful when creating user-defined events to troubleshoot an application specific issue. Don’t worry too much about overhead when adding events to your application. If the event is disabled, the implementation will be [empty](https://github.com/openjdk/jdk/blob/master/src/jdk.jfr/share/classes/jdk/jfr/Event.java). The HotSpot [C2 compiler](https://openjdk.java.net/groups/hotspot/docs/HotSpotGlossary.html) is usually able to [eliminate the event](https://youtu.be/xrdLLx6YoDM?t=1456) if the object doesn’t escape the method.
 
