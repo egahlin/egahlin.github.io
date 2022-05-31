@@ -12,7 +12,7 @@ JDK 17 was released with several improvements to JFR ergonomics.
 
 ### Configuration wizard
 
-To help assist and simplify the configuration of events, a new *configure* command was added to the jfr tool:
+To help make configuration of events easier, a new *configure* command was added to the jfr tool:
 
     $ jfr configure
 
@@ -106,7 +106,7 @@ These are the options available in the default configuration (*default.jfc*) for
 
       class-loading=<true|false>
 
-To use another filename than *custom.jfc*, specify the *–output* option:
+To explicitly control the name of the output file, i.e. to use a name other than custom.jfc, specify the filename using the –output option:
 
     $ jfr configure exceptions=all --output exceptions.jfc
 
