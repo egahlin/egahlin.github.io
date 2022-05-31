@@ -12,7 +12,7 @@ JDK 17 was released with several improvements to JFR ergonomics.
 
 ### Configuration wizard
 
-To help make configuration of events easier, a new *configure* command was added to the jfr tool:
+To make event configuration easier, a new *configure* command was added to the jfr tool:
 
     $ jfr configure
 
