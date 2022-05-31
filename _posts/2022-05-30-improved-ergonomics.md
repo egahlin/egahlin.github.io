@@ -106,7 +106,7 @@ These are the options available in the default configuration (*default.jfc*) for
 
       class-loading=<true|false>
 
-To explicitly control the name of the output file, i.e. to use a name other than custom.jfc, specify the filename using the –output option:
+To explicitly control the name of the output file, i.e. to use a name other than *custom.jfc*, specify the filename using the *–output* option:
 
     $ jfr configure exceptions=all --output exceptions.jfc
 
