@@ -149,7 +149,7 @@ To list all available events for a JDK release, use the *metadata* command:
 
     $ jfr metadata
 
-The following commands show how socket and method sampling event settings can be configured individually:
+The following commands show how settings for a socket and method sampling event can be configured individually:
 
     $ jfr configure jdk.SocketRead#enabled=true jdk.SocketRead#threshold=0ms jdk.SocketRead#stackTrace=true
 
