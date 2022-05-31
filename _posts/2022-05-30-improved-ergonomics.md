@@ -236,7 +236,7 @@ To reduce the noise, this feature is best used together with *-XX:StartFlightRec
 
 Events are flushed to the log once every second.
 
-If the JVM is shutting down, it will not wait for events to be logged before it exits.
+Beware that when the JVM is shutting down, it will not wait for events to be logged before exiting. Don't be too surprised if you do not see those last events.
 
 # &nbsp; {#posts-label}
 
