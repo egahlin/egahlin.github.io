@@ -228,7 +228,9 @@ To print all user-defined events, with a full stack trace, start the JVM with *-
 
     $ java -Xlog:jfr+event=trace -XX:StartFlightRecording
 
-To reduce the stack depth to at most five frames, use *-Xlog:jfr+event=debug*. For JDK events, use *-Xlog:jfr+system+event*. To reduce the noise, this feature is best used together with *-XX:StartFlightRecording:settings=none* and the event to debug:
+To limit the stack depth to at most five frames, use *-Xlog:jfr+event=debug*. For JDK events, use *-Xlog:jfr+system+event*.
+
+To reduce the noise, this feature is best used together with *-XX:StartFlightRecording:settings=none* and the event to debug:
 
     $ java -XX:StartFlightRecording:settings=none,+com.company.HttpGetRequest#enabled=true
 
@@ -243,5 +245,3 @@ If the JVM is shutting down, it will not wait for events to be logged before it 
 [jfr tool](https://docs.oracle.com/en/java/javase/17/docs/specs/man/jfr.html)
 
 
-
-B
