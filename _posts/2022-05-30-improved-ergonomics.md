@@ -18,8 +18,6 @@ To help make configuration of events easier, a new *configure* command was added
 
 The command provides an interactive mode that can configure events using options previously only available in the [JMC](https://www.oracle.com/java/technologies/javase/products-jmc8-downloads.html) Recording Wizard.
 
-![JMC Recording Wizard]({{ site.baseurl }}/assets/jfr-configuration-wizard.png){: class="center_50" }
-
 ![JMC Recording Wizard]({{ site.baseurl }}/assets/recording-wizard.png){: class="center_50" }
 
 To start interactive mode, use the *--interactive* flag:
