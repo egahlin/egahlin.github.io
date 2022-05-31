@@ -224,7 +224,7 @@ Example output:
     [6.227s][trace][jfr,system,event]   ]
     [6.227s][trace][jfr,system,event] }
 
-To print all user-defined events, with a full stack trace, start the JVM with *-Xlog:jfr+event=trace*:
+To log user-defined events, with a full stack trace, start the JVM with *-Xlog:jfr+event=trace*:
 
     $ java -Xlog:jfr+event=trace -XX:StartFlightRecording
 
@@ -243,5 +243,3 @@ If the JVM is shutting down, it will not wait for events to be logged before it 
 ## Resources
 
 [jfr tool](https://docs.oracle.com/en/java/javase/17/docs/specs/man/jfr.html)
-
-
