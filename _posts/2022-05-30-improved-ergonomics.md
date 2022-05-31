@@ -159,7 +159,7 @@ That said, most of the time it’s easier to use an option:
 
     $ jfr configure socket-threshold=0ms method-profiling=high
 
-The configure command can also merge configuration files:
+The *configure* command can also merge configuration files:
 
     $ jfr configure --input my.jfc,default.jfc --output combined.jfc
     
