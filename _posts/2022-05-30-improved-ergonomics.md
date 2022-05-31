@@ -196,7 +196,7 @@ The URI filter can then be specified on command line:
 
 ### Log events for debugging
 
-JDK 17 also comes with the capability to write events to the JVM [log](https://openjdk.java.net/jeps/158). This is a debug feature and not meant for production use due to the high overhead of formatting the output and printing events while holding a lock.
+JDK 17 also comes with the capability to write events to the JVM [log](https://openjdk.java.net/jeps/158). This is a development feature and not meant for production use due to the high overhead of formatting the output and printing events while holding a lock.
 
 Example output:
 
