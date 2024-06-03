@@ -56,14 +56,14 @@ If the above classes are compiled, three warnings are printed:
 
 These warnings should be fixed, but if the classes are in a library, perhaps compiled before the methods were deprecated, it will not work. Let's put the classes in a jar file, create an Application class that uses them, and run the application with JFR:
 
-  $ jar cf library.jar *.class
-  $ rm *.class *.java
-
-   public class Application {
-     public static void main(String... args) throws Exception {
-		API.enableLogging(true);
-		Class.forName("Service").getMethod("log").invoke(null, "Program started.");
-    	}
+    $ jar cf library.jar *.class
+    $ rm *.class *.java
+    
+    public class Application {
+      public static void main(String... args) throws Exception {
+        API.enableLogging(true);
+        Class.forName("Service").getMethod("log").invoke(null, "Program started.");
+      }
    }
 
 The deprecated event is enabled by default, so no configuration is needed besides starting JFR:
