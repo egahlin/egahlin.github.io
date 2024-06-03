@@ -54,7 +54,7 @@ If the above classes are compiled, three warnings are printed:
                         ^
     3 warnings
 
-These warnings should be fixed, but if the classes are in a library, perhaps compiled before the methods were deprecated, it will not work. Let's put the classes in a jar file, create an Application class that uses them, and run the application with JFR:
+These warnings should be fixed, but if the classes are in a library, perhaps compiled before the methods were deprecated, they may be missed. Let's put the classes in a jar file, create an Application class that uses them, and run the application with JFR:
 
     $ jar cf library.jar *.class
     $ rm *.class *.java
@@ -70,7 +70,7 @@ The deprecated event is enabled by default, so no configuration is needed beside
 
     $ java -XX:StartFlightRecording:filename=recording.jfr -cp library.jar Application.java 
 
-In the above example, a recording file is written when the application exits. The 'jfr view' command can be used to see the invocations.
+In the above example, a recording file is written when the application exits. The **jfr view** command can be used to see the invocations:
 
     $ jfr view deprecated-methods-for-removal recording.jfr
         
@@ -121,7 +121,7 @@ In the initial design of the event, there was no **stackTrace** field, only the 
 
 The reason the caller class and not the caller method is listed in the **deprecated-methods-for-removal** view is because JFR piggybacks on method resolution inside the JVM. For the interpreter, a check is only made once per caller class. This means only the first call site for a particular class to a specific method generates an event. If the invocation is JIT compiled, all call sites will be reported. This limitation may be lifted in the future.
 
-To record invocations to methods where @Deprecated(forRemoval=false) has been set, the event setting level can be used. Valid values are **forRemoval** and **all**.
+To record invocations to methods where **@Deprecated(forRemoval=false)** has been set, the event setting level can be used. Valid values are **forRemoval** and **all**:
 
     $ java -XX:StartFlightRecording:jdk.DeprecatedInvocation#level=all,filename=recording.jfr -cp library.jar Application.java 
 
