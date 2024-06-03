@@ -64,7 +64,7 @@ These warnings should be fixed, but if the classes are in a library, perhaps com
         API.enableLogging(true);
         Class.forName("Service").getMethod("log").invoke(null, "Program started.");
       }
-   }
+    }
 
 The deprecated event is enabled by default, so no configuration is needed besides starting JFR:
 
