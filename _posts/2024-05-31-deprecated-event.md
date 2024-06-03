@@ -7,7 +7,7 @@ published: true
 tags: [JFR, JDK 22, Event]
 ---
 
-In JDK 22, an event was added to JFR to detect invocations of deprecated methods. The main use case is to determine if a third-party library depends on methods that are going to be removed, for example, methods related to the Security Manager. See "JEP 411: Deprecate the Security Manager for Removal" for further information.
+In JDK 22, an event was added to JFR to detect invocations of deprecated methods. The main use case is to determine if a third-party library depends on methods that are going to be removed, for example, methods related to the Security Manager. See [JEP 411: Deprecate the Security Manager for Removal](https://openjdk.org/jeps/411) for further information.
 
 By detecting the use of a deprecated method early in the development process, there is additional time to upgrade, switch to another library, or file a bug with the maintainer of the library. In the future, JDK Mission Control may be extended with a rule to detect deprecated invocations.
 
@@ -23,7 +23,7 @@ To demonstrate how the event works, two classes will be used, both containing in
             }
         });
 	  }
-
+    
    	  public static void runTask(Runnable task) {
 		try {
 			task.run();
@@ -32,7 +32,7 @@ To demonstrate how the event works, two classes will be used, both containing in
 		}
 	  }
     }
-
+    
     public class Service {
 	  public static void log(String message) {
 		String shouldLog = System.getProperty("log", "true");
@@ -83,7 +83,7 @@ In the above example, a recording file is written when the application exits. Th
     java.lang.Boolean.<init>(String)                              Service          
     java.security.AccessController.doPrivileged(PrivilegedAction) API      
 
-Notice that the API::runTask method is not listed. There are two reasons for that. First, it's never invoked, and JFR purposely only reports methods that are actually called. Second, the method references a deprecated class, but JFR only tracks calls to deprecated methods.
+Notice that the **API::runTask** method is not listed. There are two reasons for that. First, it's never invoked, and JFR purposely only reports methods that are actually called. Second, the method references a deprecated class, but JFR only tracks calls to deprecated methods.
 
 If you want to know all usages of deprecated APIs in a library, the jdeprscan tool is a better alternative:
 
@@ -93,7 +93,7 @@ If you want to know all usages of deprecated APIs in a library, the jdeprscan to
     class API uses deprecated class java/lang/ThreadDeath (forRemoval=true)
     class Service uses deprecated method java/lang/Boolean::<init>(Ljava/lang/String;)V (forRemoval=true)
 
-The event emitted by JFR contains both the caller and callee, as we can see if we use the 'jfr print' command:
+The event emitted by JFR contains both the caller and callee, as we can see if we use the **jfr print** command:
 
     $ jfr print --events jdk.DeprecatedInvocation recording.jfr
 
@@ -123,7 +123,7 @@ In the initial design of the event, there was no stack trace field, only the fie
 
 The reason the caller class and not the caller method is listed in the deprecated-methods-for-removal view is because JFR piggybacks on method resolution inside the JVM. For the interpreter, a check is only made once per caller class. This means only the first call site for a particular class to a specific method generates an event. If the invocation is JIT compiled, all call sites will be reported. This limitation may be lifted in the future.
 
-To record invocations to methods where @Deprecated(forRemoval=false) has been set, the event setting level can be used. Valid values are "off", "forRemoval" and "all".
+To record invocations to methods where @Deprecated(forRemoval=false) has been set, the event setting level can be used. Valid values are **off**, **forRemoval** and **all**.
 
   $ java -XX:StartFlightRecording:jdk.DeprecatedInvocation#level=all,filename=recording.jfr -cp library.jar Application.java 
 
