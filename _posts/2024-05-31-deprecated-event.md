@@ -121,7 +121,7 @@ In the initial design of the event, there was no **stackTrace** field, only the 
 
 The reason the caller class and not the caller method is listed in the **deprecated-methods-for-removal** view is because JFR piggybacks on method resolution inside the JVM. For the interpreter, a check is only made once per caller class. This means only the first call site for a particular class to a specific method generates an event. If the invocation is JIT compiled, all call sites will be reported. This limitation may be lifted in the future.
 
-To record invocations to methods where **@Deprecated(forRemoval=false)** has been set, the event setting level can be used. Valid values are **forRemoval** and **all**:
+To record invocations to methods where **@Deprecated(forRemoval=false)** has been set, the event setting **level** can be used. Valid values are **forRemoval** and **all**:
 
     $ java -XX:StartFlightRecording:jdk.DeprecatedInvocation#level=all,filename=recording.jfr -cp library.jar Application.java 
 
