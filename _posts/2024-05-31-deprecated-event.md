@@ -14,32 +14,32 @@ By detecting the use of a deprecated method early in the development process, th
 To demonstrate how the event works, two classes will be used, both containing invocations to methods deprecated for removal.
 
     public class API {
-
-	  public static void enableLogging(boolean enable) {
-		AccessController.doPrivileged(new PrivilegedAction<Void>() {
-            public Void run() {
-                System.setProperty("log", String.valueOf(enable));
-                return null;
-            }
-        });
-	  }
     
-   	  public static void runTask(Runnable task) {
-		try {
-			task.run();
-		} catch (ThreadDeath td) {
-			System.out.println("Task stopped.");
-		}
-	  }
+      public static void enableLogging(boolean enable) {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+          public Void run() {
+            System.setProperty("log", String.valueOf(enable));
+            return null;
+          }
+        });
+      }
+    
+      public static void runTask(Runnable task) {
+        try {
+          task.run();
+        } catch (ThreadDeath td) {
+          System.out.println("Task stopped.");
+        }
+      }
     }
     
     public class Service {
-	  public static void log(String message) {
-		String shouldLog = System.getProperty("log", "true");
-		if (new Boolean("log")) {
-			System.out.print(message);
-		}
-	  }
+      public static void log(String message) {
+        String shouldLog = System.getProperty("log", "true");
+        if (new Boolean("log")) {
+          System.out.print(message);
+        }
+      }
     }
 
 If the above classes are compiled, three warnings are printed:
@@ -85,7 +85,7 @@ In the above example, a recording file is written when the application exits. Th
 
 Notice that the **API::runTask** method is not listed. There are two reasons for that. First, it's never invoked, and JFR purposely only reports methods that are actually called. Second, the method references a deprecated class, but JFR only tracks calls to deprecated methods.
 
-If you want to know all usages of deprecated APIs in a library, the jdeprscan tool is a better alternative:
+If you want to know all usages of deprecated APIs in a library, the **jdeprscan** tool is a better alternative:
 
     $ jdeprscan --for-removal library.jar
     Jar file library.jar:
@@ -125,7 +125,7 @@ The reason the caller class and not the caller method is listed in the deprecate
 
 To record invocations to methods where @Deprecated(forRemoval=false) has been set, the event setting level can be used. Valid values are **off**, **forRemoval** and **all**.
 
-  $ java -XX:StartFlightRecording:jdk.DeprecatedInvocation#level=all,filename=recording.jfr -cp library.jar Application.java 
+    $ java -XX:StartFlightRecording:jdk.DeprecatedInvocation#level=all,filename=recording.jfr -cp library.jar Application.java 
 
 I hope this blog post has provided a deeper understanding of how the deprecated event works and its limitations. The greatest benefit of the event will likely be realized in systems that already continuously monitor the JVM. Now, they will be able to detect the use of deprecated methods as well.
 
