@@ -54,7 +54,7 @@ If the above classes are compiled, three warnings are printed:
                         ^
     3 warnings
 
-These warnings should be fixed, but if the classes are in a library, perhaps compiled before the methods were deprecated, they may be missed. Let's put the classes in a jar file, create an **Application** class that uses them, and run the application with JFR:
+These warnings should be fixed, but if the classes are in a library, perhaps compiled and download before the methods were deprecated, they may be missed. Let's put the classes in a jar file, create an **Application** class that uses them, and run the application with JFR:
 
     $ jar cf library.jar *.class
     $ rm *.class *.java
