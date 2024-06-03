@@ -2,7 +2,7 @@
 layout: post
 title:  "Deprecated Event"
 author:  "ErikGahlin"
-date:   2022-05-31 21:10:24 +0200
+date:   2024-05-31 21:10:24 +0200
 published: true
 tags: [JFR, JDK 22, Event]
 ---
