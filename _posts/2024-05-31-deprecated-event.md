@@ -9,7 +9,7 @@ tags: [JFR, JDK 22, Event]
 
 In JDK 22, an event was added to JFR to detect invocations of deprecated methods. The main use case is to determine if a third-party library depends on methods that are going to be removed, for example, methods related to the Security Manager. See [JEP 411: Deprecate the Security Manager for Removal](https://openjdk.org/jeps/411) for further information.
 
-By detecting the use of a deprecated method early in the development process, there is additional time to upgrade, switch to another library, or file a bug with the maintainer of the library. In the future, JDK Mission Control may be extended with a rule to detect deprecated invocations.
+By detecting the use of a deprecated method early in the development process, there is additional time to upgrade, switch to another library, or file a bug with the maintainer of the library. In the future, [JDK Mission Control](https://jdk.java.net/jmc/9/) may be extended with a rule to detect deprecated invocations.
 
 To demonstrate how the event works, two classes will be used, both containing invocations to methods deprecated for removal.
 
