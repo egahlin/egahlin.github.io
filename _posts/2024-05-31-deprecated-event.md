@@ -14,7 +14,6 @@ By detecting the use of a deprecated method early in the development process, th
 To demonstrate how the event works, two classes will be used, both containing invocations to methods deprecated for removal.
 
     public class API {
-    
       public static void enableLogging(boolean enable) {
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
           public Void run() {
@@ -23,7 +22,6 @@ To demonstrate how the event works, two classes will be used, both containing in
           }
         });
       }
-    
       public static void runTask(Runnable task) {
         try {
           task.run();
@@ -119,7 +117,7 @@ The event emitted by JFR contains both the caller and callee, as we can see if w
       ]
     }
 
-In the initial design of the event, there was no stack trace field, only the fields method and caller. By putting the caller as the top frame in the stackTrace field, it worked better with existing tools for visualization. It's not possible to get more than one frame for the event.
+In the initial design of the event, there was no **stackTrace** field, only the fields **method** and **caller**. By putting the caller as the top frame in the stackTrace field, it worked better with existing tools for visualization. It's not possible to get more than one frame for the event.
 
 The reason the caller class and not the caller method is listed in the deprecated-methods-for-removal view is because JFR piggybacks on method resolution inside the JVM. For the interpreter, a check is only made once per caller class. This means only the first call site for a particular class to a specific method generates an event. If the invocation is JIT compiled, all call sites will be reported. This limitation may be lifted in the future.
 
