@@ -8,15 +8,14 @@ image:  "/assets/method-tracer-ui.png"
 tags: [JFR, JDK 25, Event]
 ---
 
-JDK 25, to be released on [September 16](https://openjdk.org/projects/jdk/25/), will contain three new [Java Enhancement Proposals](https://openjdk.org/jeps/1) (JEPs) for JFR and several enhancement to the [jdk.jfr API](https://docs.oracle.com/en/java/javase/24/docs/api/jdk.jfr/module-summary.html) and the [jfr command]((https://docs.oracle.com/en/java/javase/24/docs/specs/man/jfr.html)).
+JDK 25, to be released on [September 16](https://openjdk.org/projects/jdk/25/), will contain three new [Java Enhancement Proposals](https://openjdk.org/jeps/1) (JEPs) for JFR and several enhancement to the [jdk.jfr API](https://docs.oracle.com/en/java/javase/24/docs/api/jdk.jfr/module-summary.html) and the [jfr command](https://docs.oracle.com/en/java/javase/24/docs/specs/man/jfr.html).
 
 ## JEP 518: JFR Cooperative Sampling
 
 [JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518) reworks how method sampling is done in the [HotSpot JVM](https://wiki.openjdk.org/display/HotSpot). Stack walking now only happens from a [safepoint](https://openjdk.org/groups/hotspot/docs/HotSpotGlossary.html#safepoint), but without the safepoint bias that [JVM TI](https://docs.oracle.com/en/java/javase/22/docs/specs/jvmti.html)-based method samplers suffer from. This results in stack walking being safer when used together with [ZGC](https://wiki.openjdk.org/display/zgc/Main), and it makes the method sampler more scalable since stack walking can now happen in multiple threads simultaneously. A new experimental event  **SafepointLatency** has been added, which records the time it takes for a method to reach a safepoint. It’s disabled by default, but you can enable it on command line like this:
 
     $ java -XX:StartFlightRecording:jdk.SafepointLatency#enabled=true,filename=recording.jfr
-    $ jfr print --events jdk.SafepointLatency recording
-     .jfr
+    $ jfr print --events jdk.SafepointLatency recording.jfr
     jdk.SafepointLatency {
     startTime = 23:57:39.856 (2025-05-31)
     duration = 0.0283 ms
@@ -32,16 +31,16 @@ JDK 25, to be released on [September 16](https://openjdk.org/projects/jdk/25/), 
       ]
     }
 
-## JEP 509: JFR CPU-Time Profiling
+## JEP 509: JFR CPU-Time Profiling (Experimental)
 
-[JEP 509: JFR CPU-Time Profiling (Experimental)](https://openjdk.org/jeps/509) contains an experimental Linux-only event that uses [SIGPROF](https://www.gnu.org/software/libc/manual/html_node/Alarm-Signals.html) to record method samples. The current method sampling event, jdk.ExecutionSample, works on all platforms, but it only samples methods running Java code. The new jdk.CPUTimeSample also takes into account methods executing in native code, for example, a call to a native method using the new [FFM API](https://openjdk.org/jeps/454) added in JDK 22. The feature builds on JEP 518: JFR Cooperative Sampling to ensure that the stack can be walked safely. To try out CPU-time profiling on Linux, use the following commands:
+[JEP 509: JFR CPU-Time Profiling (Experimental)](https://openjdk.org/jeps/509) contains an experimental Linux-only event that uses [SIGPROF](https://www.gnu.org/software/libc/manual/html_node/Alarm-Signals.html) to record method samples. The current method sampling event, **jdk.ExecutionSample**, works on all platforms, but it only samples methods running Java code. The new jdk.CPUTimeSample also takes into account methods executing in native code, for example, a call to a native method using the new [FFM API](https://openjdk.org/jeps/454) added in JDK 22. The feature builds on JEP 518: JFR Cooperative Sampling to ensure that the stack can be walked safely. To try out CPU-time profiling on Linux, use the following commands:
 
     $ java -XX:StartFlightRecording:jdk.jdk.CPUTimeSample#enabled=true,filename=recording.jfr
     $ jfr view cpu-time-hot-methods recording.jfr
 
 ## JEP 520: JFR Method Timing & Tracing
 
-[JEP 520: JFR Method Timing & Tracing](https://openjdk.org/jeps/520 adds two new events to trace and time methods. Timing and tracing method invocations can help identify performance bottlenecks, optimize code, and find the root causes of bugs. The JEP text demonstrates several command-line examples, so they will not be repeated here. However, I created a simple GUI to validate the design and demonstrate how tools can leverage the events.
+[JEP 520: JFR Method Timing & Tracing](https://openjdk.org/jeps/520) adds two new events to trace and time methods. Timing and tracing method invocations can help identify performance bottlenecks, optimize code, and find the root causes of bugs. The JEP text demonstrates several command-line examples, so they will not be repeated here. However, I created a simple GUI to validate the design and demonstrate how tools can leverage the events.
 
 ![Method Tracer GUI]({{ site.baseurl }}/assets/method-tracer-ui.png){: class="center_85" }
 
@@ -54,11 +53,11 @@ The application is [Swing-based](https://docs.oracle.com/javase/tutorial/uiswing
 
 ## Updates to the jfr command
 
-The **jfr scrub*** command can be used to remove sensitive information, such as values stored in system properties or environment variables, but there was previously no indication in the output of what was removed. If you entered the wrong event name, the sensitive information might still be present. A cumbersome and error-prone workaround was to use **jfr summary** command to compare files before and after running **jfr scrub**.
+The **jfr scrub** command can be used to remove sensitive information, such as values stored in system properties or environment variables, but there was previously no indication in the output of what was removed. If you entered the wrong event name, the sensitive information might still be present. A cumbersome and error-prone workaround was to use **jfr summary** command to compare files before and after running the **jfr scrub** command.
 
 In JDK 25, the **jfr scrub** command has been updated so that the tool now prints the number of events that were removed. This way, you can be sure that the sensitive information was removed from the recording file.
 
-    $ jfr scrub --exclude-events jdk.InitialSystemProperty,jdk.InitialEnvironmentVariable s.jfr
+    $ jfr scrub --exclude-events jdk.InitialSystemProperty,jdk.InitialEnvironmentVariable rec.jfr scrubbed.jfr
     Removed events:
     jdk.InitialEnvironmentVariable 23/23
     jdk.InitialSystemProperty      15/15
@@ -86,9 +85,9 @@ The **jfr print** command adds a new option **--exact** that prints timestamps, 
 
 This can be useful if you want to compare exact values with a previous run or if you need exact information in bug reports. For more information, see the [CSR](https://bugs.openjdk.org/browse/JDK-8354195).
 
-## New report-on-exit option
+## New report-on-exit Option
 
-The **-XX:StartFlightRecording** command gets a new option called report-on-exit. This can be used to print a report/view when the JVM exits. For more information about views, see this [blog post](https://egahlin.github.io/2023/05/30/views.html). In the following example, the new method timing event is used to print the time it took for class initializer to execute. This is useful if you want to find places where code could be improved to reduce application startup time.
+The **-XX:StartFlightRecording** option gets a new sub-option called **report-on-exit** that can be used to print a report/view when the JVM exits. For more information about views, see earlier [blog post](https://egahlin.github.io/2023/05/30/views.html). In the following example, the new method timing event is used to print the time it took for class initializers to execute, which can be useful when optimizing application startup time.
 
     $ java '-XX:StartFlightRecording:method-timing=::<clinit>,report-on-exit=method-timing' -jar J2Ddemo.jar
    
@@ -142,7 +141,8 @@ For more information about the feature, see the [CSR](https://bugs.openjdk.org/b
 
 JDK 25 will add support for [Rate-limited sampling of Java events](https://bugs.openjdk.org/browse/JDK-8351594). For example, you may want to track data that is posted to a queue at a very high frequency. Recording every event may result in the recording file becoming filled with queue-related events, potentially displacing other important data. By annotating your event with @Throttle, you can set an upper limit of the number of events per second. For example:
 
-    @Throttle(“300/s”) @Label(“Post Message”)
+    @Throttle(“300/s”)
+    @Label(“Post Message”)
     @Name(“example.PostMessage”)
     @Category(“Message Queue”)
     static class PostMessageEvent extends Event {
@@ -159,14 +159,13 @@ JDK 25 will add support for [Rate-limited sampling of Java events](https://bugs.
       }
     }
 
-Event objects that are throttled cannot be reused. The reason for this is that the event must hold state if it is to be sampled between a call to shouldCommit() and commit(). Like other event settings, throttling can be controlled from the command line. The following example shows how throttling can be disabled so that all events are emitted:
+Event objects that are throttled cannot be reused. The reason for this is that the event must hold the sample-state between a call to shouldCommit() and commit(). Like other event settings, throttling can be controlled from the command line. The following example shows how throttling can be disabled so that all events are emitted:
 
      $ java -XX:StartFlightRecording:example.PostMessage#throttle=off …
-     
 
 ## Contextual Events
 
-JDK 25 also comes with a new annotation to help tools visualize contextual information. Contextual information refers to data shared across all events in the same thread during the lifespan of an event annotated with **@Contextual**.
+JDK 25 comes with a new annotation to help tools visualize contextual information. Contextual information here refers to data shared across all events in the same thread during the lifespan of an event annotated with **@Contextual**.
 
 For example, to trace requests or transactions in a system, a trace event can be created to provide context.
 
