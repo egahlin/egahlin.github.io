@@ -3,6 +3,7 @@ layout: post
 title:  "What's new in JFR in JDK 25"
 author:  "ErikGahlin"
 date:   2025-05-31 23:10:24 +0200
+published: true
 image:  "/assets/method-tracer-ui.png.png"
 tags: [JFR, JDK 25, Event]
 ---
