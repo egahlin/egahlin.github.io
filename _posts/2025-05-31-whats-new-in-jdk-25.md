@@ -85,7 +85,7 @@ Exact values are useful for comparing results across multiple runs or for includ
 
 ## New report-on-exit Option
 
-The **-XX:StartFlightRecording** option gets a new sub-option called **report-on-exit** that can be used to print a report or view when the JVM exits. For more information about views, see an earlier [blog post](https://egahlin.github.io/2023/05/30/views.html). In the following example, the new method timing event is used to print the time it took for class initializers to execute, which can be useful when optimizing application startup time.
+The **-XX:StartFlightRecording** option gets a new sub-option called **report-on-exit** that can be used to print a report/view when the JVM exits. For more information about views, see my earlier [blog post](https://egahlin.github.io/2023/05/30/views.html). In the following example, the new method timing event is used to print the time it took for class initializers to execute, which can be useful when optimizing application startup time.
 
     $ java '-XX:StartFlightRecording:method-timing=::<clinit>,report-on-exit=method-timing' -jar J2Ddemo.jar
    
