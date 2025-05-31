@@ -33,7 +33,7 @@ JDK 25, to be released on [September 16](https://openjdk.org/projects/jdk/25/), 
 
 ## JEP 509: JFR CPU-Time Profiling (Experimental)
 
-[JEP 509: JFR CPU-Time Profiling (Experimental)](https://openjdk.org/jeps/509) contains an experimental Linux-only event that uses [SIGPROF](https://www.gnu.org/software/libc/manual/html_node/Alarm-Signals.html) to record method samples. The current method sampling event, **jdk.ExecutionSample**, works on all platforms, but it only samples methods running Java code. The new **jdk.CPUTimeSample** also takes into account methods executing in native code, for example, a call to a native method using the new [FFM API](https://openjdk.org/jeps/454) added in JDK 22. The feature builds on [JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518) to ensure that the stack can be walked safely. To try out CPU-time profiling on Linux, use the following commands:
+[JEP 509: JFR CPU-Time Profiling (Experimental)](https://openjdk.org/jeps/509) contains an experimental Linux-only event that uses [SIGPROF](https://www.gnu.org/software/libc/manual/html_node/Alarm-Signals.html) to record method samples. The current method sampling event, **jdk.ExecutionSample**, works on all platforms, but it only samples methods running Java code. The new **jdk.CPUTimeSample** also takes into account methods executing in native code, for example, a call to a native method using the new [FFM API](https://openjdk.org/jeps/454). The feature builds on [JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518) to ensure that stacks can be walked safely. To try out CPU-time profiling on Linux, use the following commands:
 
     $ java -XX:StartFlightRecording:jdk.jdk.CPUTimeSample#enabled=true,filename=recording.jfr
     $ jfr view cpu-time-hot-methods recording.jfr
@@ -44,18 +44,16 @@ JDK 25, to be released on [September 16](https://openjdk.org/projects/jdk/25/), 
 
 ![Method Tracer GUI]({{ site.baseurl }}/assets/method-tracer-ui.png){: class="center_85" }
 
-The source code will be available on GitHub when early-access builds are released, allowing you to run the application as shown below:
+The source code will be available on GitHub when [early-access builds](https://jdk.java.net/25/) are released (build 26), allowing you to run the application as shown below:
 
     $ git clone https://github.com/flight-recorder/method-tracer 
     $ java method-tracer/MethodTracer.java
 
-The application is [Swing-based](https://docs.oracle.com/javase/tutorial/uiswing/TOC.html) and can connect to either a local or remote application over [JMX](https://docs.oracle.com/en/java/javase/24/jmx/introduction-jmx-technology.html). It uses [JFR Event Streaming](https://openjdk.org/jeps/349) and [Remote Recording Streaming](https://egahlin.github.io/2021/05/17/remote-recording-stream.html) for data transfer. You can try it out when [early-access builds](https://jdk.java.net/25/) of the JEP are available (expected in build 26). If you find issues, please report them to the [hotspot-jfr-dev](https://mail.openjdk.org/mailman/listinfo/hotspot-jfr-dev) mailing list or send a direct message to [@ErikGahlin](https://x.com/ErikGahlin).
+The application is [Swing-based](https://docs.oracle.com/javase/tutorial/uiswing/TOC.html) and can connect to either a local or remote application over [JMX](https://docs.oracle.com/en/java/javase/24/jmx/introduction-jmx-technology.html). It uses [JFR Event Streaming](https://openjdk.org/jeps/349) and [Remote Recording Streaming](https://egahlin.github.io/2021/05/17/remote-recording-stream.html) for data transfer. If you find issues with the JEP, please report them to the [hotspot-jfr-dev](https://mail.openjdk.org/mailman/listinfo/hotspot-jfr-dev) mailing list or send a direct message to [@ErikGahlin](https://x.com/ErikGahlin).
 
 ## Updates to the jfr command
 
-The **jfr scrub** command can be used to remove sensitive information, such as values stored in system properties or environment variables, but there was previously no indication in the output of what was removed. If you entered the wrong event name, the sensitive information might still be present. A cumbersome and error-prone workaround was to use the **jfr summary** command to compare files before and after running the **jfr scrub** command.
-
-In JDK 25, the **jfr scrub** command has been updated so that the tool now prints the number of events that were removed. This way, you can be sure that sensitive information was removed from the recording file.
+The **jfr scrub** command is used to remove sensitive information, such as values stored in system properties or environment variables, from a JFR recording file. Previously, verifying the results of the command required using the **jfr summary** command to compare files before and after scrubbing. In JDK 25, the **jfr scrub** command has been updated to print the number of events that were removed, making it easier to verify that sensitive information has been removed. For example:
 
     $ jfr scrub --exclude-events jdk.InitialSystemProperty,jdk.InitialEnvironmentVariable rec.jfr scrubbed.jfr
     Removed events:
@@ -162,7 +160,6 @@ JDK 25 will add support for [Rate-limited sampling of Java events](https://bugs.
 Event objects that are throttled cannot be reused because they must hold their sample state between a call to shouldCommit() and commit(). Like other event settings, throttling can be controlled from the command line. The following example shows how throttling can be disabled so that all events are emitted:
 
      $ java -XX:StartFlightRecording:example.PostMessage#throttle=off …
-
 
 ## Contextual Events
 
