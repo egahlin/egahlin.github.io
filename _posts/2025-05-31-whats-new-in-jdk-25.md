@@ -35,7 +35,7 @@ JDK 25, to be released on [September 16](https://openjdk.org/projects/jdk/25/), 
 
 [JEP 509: JFR CPU-Time Profiling (Experimental)](https://openjdk.org/jeps/509) contains an experimental Linux-only event that uses [SIGPROF](https://www.gnu.org/software/libc/manual/html_node/Alarm-Signals.html) to record method samples. The current method sampling event, **jdk.ExecutionSample**, works on all platforms, but it only samples methods running Java code. The new **jdk.CPUTimeSample** also takes into account methods executing in native code, for example, a call to a native method using the new [FFM API](https://openjdk.org/jeps/454). The feature builds on [JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518) to ensure that stacks can be walked safely. To try out CPU-time profiling on Linux, use the following commands:
 
-    $ java -XX:StartFlightRecording:jdk.jdk.CPUTimeSample#enabled=true,filename=recording.jfr
+    $ java -XX:StartFlightRecording:jdk.CPUTimeSample#enabled=true,filename=recording.jfr
     $ jfr view cpu-time-hot-methods recording.jfr
 
 ## JEP 520: JFR Method Timing & Tracing
@@ -80,7 +80,6 @@ The **jfr print** command adds a new option **--exact** that prints timestamps, 
       ...
      ]
     }
-
 Exact values are useful for comparing results across multiple runs or for including precise information in bug reports. See the [CSR](https://bugs.openjdk.org/browse/JDK-8354195) for more details.
 
 ## New report-on-exit Option
@@ -137,7 +136,7 @@ For more information about the feature, see the [CSR](https://bugs.openjdk.org/b
 
 ## Rate-limited Sampling
 
-JDK 25 will add support for [Rate-limited sampling of Java events](https://bugs.openjdk.org/browse/JDK-8351594). For example, you may want to track data that is posted to a queue at a very high frequency. Recording every event may result in the recording file becoming filled with queue-related events, potentially displacing other important data. By annotating your event with @Throttle, you can set an upper limit on the number of events per time unit. For example:
+JDK 25 will add support for [Rate-limited sampling of Java events](https://bugs.openjdk.org/browse/JDK-8351594). For example, you may want to track data that is posted to a queue at a very high frequency. Recording every event may result in the recording file becoming filled with queue-related events, potentially displacing other important data. By annotating your event with **@Throttle**, you can set an upper limit on the number of events per time unit. For example:
 
     @Throttle(“300/s”)
     @Label(“Post Message”)
@@ -206,10 +205,10 @@ If an order in the order service stalls due to lock contention, a user interface
       startTime = 17:51:29.038 (2025-02-07)
       duration = 50.56 ms
       monitorClass = java.util.ArrayDeque (classLoader = bootstrap)
-     previousOwner = "Order Thread" (javaThreadId = 56209, virtual = true)
-     address = 0x60000232ECB0
-     eventThread = "Order Thread" (javaThreadId = 52613, virtual = true)
-     stackTrace = [
+      previousOwner = "Order Thread" (javaThreadId = 56209, virtual = true)
+      address = 0x60000232ECB0
+      eventThread = "Order Thread" (javaThreadId = 52613, virtual = true)
+      stackTrace = [
        java.util.zip.ZipFile$CleanableResource.getInflater() line: 685
        java.util.zip.ZipFile$ZipFileInflaterInputStream.<init>(ZipFile) line: 388
        java.util.zip.ZipFile.getInputStream(ZipEntry) line: 355
