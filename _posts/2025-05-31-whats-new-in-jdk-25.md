@@ -25,7 +25,7 @@ JDK 25, to be released on [September 16](https://openjdk.org/projects/jdk/25/), 
     stackTrace = [
       sun.java2d.marlin.MarlinTileGenerator.getAlphaNoRLE(byte[], int, int) line: 268
       sun.java2d.marlin.MarlinTileGenerator.getAlpha(byte[], int, int) line: 193
-      sun.java2d.pipe.AAShapePipe.renderTiles(SunGraphics2D, Shape, AATileGenerator, int[], AAShapePipe$TileState) line: 204
+      sun.java2d.pipe.AAShapePipe.renderTiles(SunGraphics2D, Shape,) line: 204
       sun.java2d.pipe.AAShapePipe.renderPath(SunGraphics2D, Shape, BasicStroke) line: 150
       sun.java2d.pipe.AAShapePipe.fill(SunGraphics2D, Shape) line: 83
       ...
@@ -37,7 +37,7 @@ JDK 25, to be released on [September 16](https://openjdk.org/projects/jdk/25/), 
 [JEP 509: JFR CPU-Time Profiling (Experimental)](https://openjdk.org/jeps/509) contains an experimental Linux-only event that uses [SIGPROF](https://www.gnu.org/software/libc/manual/html_node/Alarm-Signals.html) to record method samples. The current method sampling event, jdk.ExecutionSample, works on all platforms, but it only samples methods running Java code. The new jdk.CPUTimeSample also takes into account methods executing in native code, for example, a call to a native method using the new [FFM API](https://openjdk.org/jeps/454) added in JDK 22. The feature builds on JEP 518: JFR Cooperative Sampling to ensure that the stack can be walked safely. To try out CPU-time profiling on Linux, use the following commands:
 
     $ java -XX:StartFlightRecording:jdk.jdk.CPUTimeSample#enabled=true,filename=recording.jfr
-    $ jfr view cpu-time-hot-methods
+    $ jfr view cpu-time-hot-methods recording.jfr
 
 ## JEP 520: JFR Method Timing & Tracing
 
@@ -54,7 +54,9 @@ The application is [Swing-based](https://docs.oracle.com/javase/tutorial/uiswing
 
 ## Updates to the jfr command
 
-The **jfr command** has been updated. If you use ‘jfr scrub’, the tool now prints if an event was removed. This confirms the removal of sensitive information from the recording.
+The **jfr scrub*** command can be used to remove sensitive information, such as values stored in system properties or environment variables, but there was previously no indication in the output of what was removed. If you entered the wrong event name, the sensitive information might still be present. A cumbersome and error-prone workaround was to use **jfr summary** command to compare files before and after running **jfr scrub**.
+
+In JDK 25, the **jfr scrub** command has been updated so that the tool now prints the number of events that were removed. This way, you can be sure that the sensitive information was removed from the recording file.
 
     $ jfr scrub --exclude-events jdk.InitialSystemProperty,jdk.InitialEnvironmentVariable s.jfr
     Removed events:
@@ -83,7 +85,6 @@ The **jfr print** command adds a new option **--exact** that prints timestamps, 
     }
 
 This can be useful if you want to compare exact values with a previous run or if you need exact information in bug reports. For more information, see the [CSR](https://bugs.openjdk.org/browse/JDK-8354195).
-
 
 ## New report-on-exit option
 
