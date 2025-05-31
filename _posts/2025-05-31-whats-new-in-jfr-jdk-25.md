@@ -42,12 +42,12 @@ The ‘jfr print’ command adds a new option “--exact” that prints timestam
       startTime = 20:30:33.091317500 (2025-05-31)
       duration = 0.033899709 s
       monitorClass = sun.java2d.metal.MTLRenderQueue$QueueFlusher (classLoader = bootstrap)
-     notifier = "AWT-EventQueue-0" (javaThreadId = 32)
-     timeout = 0.100000000 s
-     timedOut = false
-     address = 0x600000334820
-     eventThread = "Java2D Queue Flusher" (javaThreadId = 35)
-     stackTrace = [
+      notifier = "AWT-EventQueue-0" (javaThreadId = 32)
+      timeout = 0.100000000 s
+      timedOut = false
+      address = 0x600000334820
+      eventThread = "Java2D Queue Flusher" (javaThreadId = 35)
+      stackTrace = [
       java.lang.Object.wait0(long)
       java.lang.Object.wait(long) line: 389
       sun.java2d.metal.MTLRenderQueue$QueueFlusher.run() line: 206
@@ -81,9 +81,9 @@ The -XX:StartFlightRecording command gets a new option called report-on-exit. Th
 Another example of the report-on-exit option is to print a summary of GC pauses when the application exits:
 
     $ java -XX:StartFlightRecording:report-on-exit=gc-pauses -jar -jar J2Ddemo.jar
-   
+    
     GC Pauses
--    --------
+    --------
     
     Total Pause Time: 331 ms
     
@@ -109,7 +109,7 @@ Another example of the report-on-exit option is to print a summary of GC pauses 
 For more information about the feature, see the [CSR](https://bugs.openjdk.org/browse/JDK-8351370) or use the new [-XX:StartFlightRecording:help](https://bugs.openjdk.org/browse/JDK-8326338) command introduced in [JDK 24](https://openjdk.org/projects/jdk/24/).
 
 JDK 25 will add support for [Rate-limited sampling of Java events](https://bugs.openjdk.org/browse/JDK-8351594). For example, you may want to track data that are posted to a queue at a very high frequency. Recording every event can cause the recording to be filled with queue-related events, potentially displacing other important data. By annotating your event with @Throttle, you can set an upper limit of the number of events per seond. For example:
- 
+
     @Throttle(“300/s”) @Label(“Post Message”)
     @Name(“example.PostMessage”)
     @Category(“Message Queue”)
