@@ -8,18 +8,36 @@ image:  "/assets/method-tracer-ui.png"
 tags: [JFR, JDK 25, Event]
 ---
 
-JDK 25, to be released on [September 16](https://openjdk.org/projects/jdk/25/), will contain three new Java Enhancement Proposals (JEPs) for JFR and several enhancement to the jdk.jfr API and the jfr command.
+JDK 25, to be released on [September 16](https://openjdk.org/projects/jdk/25/), will contain three new [Java Enhancement Proposals](https://openjdk.org/jeps/1) (JEPs) for JFR and several enhancement to the [jdk.jfr API](https://docs.oracle.com/en/java/javase/24/docs/api/jdk.jfr/module-summary.html) and the [jfr command]((https://docs.oracle.com/en/java/javase/24/docs/specs/man/jfr.html)).
 
 ## JEP 518: JFR Cooperative Sampling
 
-[JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518) reworks how method sampling is done in the [HotSpot JVM](https://wiki.openjdk.org/display/HotSpot). Stack walking now only happens from a [safepoint](https://openjdk.org/groups/hotspot/docs/HotSpotGlossary.html#safepoint), but without safepoint bias that [JVM TI](https://docs.oracle.com/en/java/javase/22/docs/specs/jvmti.html)-based method samplers suffer from. This results in stack walking being safer when used together with [ZGC](https://wiki.openjdk.org/display/zgc/Main), and it makes the method sampler more scalable since stack walking can now happen in multiple threads simultaneously. A new experimental event has been added, called **SafepointLatency**, which records the time it takes for a method to reach a safepoint. It’s disabled by default, but you can enable it like this:
+[JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518) reworks how method sampling is done in the [HotSpot JVM](https://wiki.openjdk.org/display/HotSpot). Stack walking now only happens from a [safepoint](https://openjdk.org/groups/hotspot/docs/HotSpotGlossary.html#safepoint), but without the safepoint bias that [JVM TI](https://docs.oracle.com/en/java/javase/22/docs/specs/jvmti.html)-based method samplers suffer from. This results in stack walking being safer when used together with [ZGC](https://wiki.openjdk.org/display/zgc/Main), and it makes the method sampler more scalable since stack walking can now happen in multiple threads simultaneously. A new experimental event  **SafepointLatency** has been added, which records the time it takes for a method to reach a safepoint. It’s disabled by default, but you can enable it on command line like this:
 
-    $ java -XX:StartFlightRecording:jdk.SafepointLatency#enabled=true,filename=s.jfr …
-    $ jfr print --events jdk.SafepointLatency s.jfr
+    $ java -XX:StartFlightRecording:jdk.SafepointLatency#enabled=true,filename=recording.jfr
+    $ jfr print --events jdk.SafepointLatency recording
+     .jfr
+    jdk.SafepointLatency {
+    startTime = 23:57:39.856 (2025-05-31)
+    duration = 0.0283 ms
+    threadState = "_thread_in_Java"
+    eventThread = "AWT-EventQueue-0" (javaThreadId = 32)
+    stackTrace = [
+      sun.java2d.marlin.MarlinTileGenerator.getAlphaNoRLE(byte[], int, int) line: 268
+      sun.java2d.marlin.MarlinTileGenerator.getAlpha(byte[], int, int) line: 193
+      sun.java2d.pipe.AAShapePipe.renderTiles(SunGraphics2D, Shape, AATileGenerator, int[], AAShapePipe$TileState) line: 204
+      sun.java2d.pipe.AAShapePipe.renderPath(SunGraphics2D, Shape, BasicStroke) line: 150
+      sun.java2d.pipe.AAShapePipe.fill(SunGraphics2D, Shape) line: 83
+      ...
+      ]
+    }
 
 ## JEP 509: JFR CPU-Time Profiling
 
-[JEP 509: JFR CPU-Time Profiling (Experimental)](https://openjdk.org/jeps/509) contains an experimental Linux-only event that uses [SIGPROF](https://www.gnu.org/software/libc/manual/html_node/Alarm-Signals.html) to record method samples. The current method sampling event, jdk.ExecutionSample, works on all platforms, but it only samples methods running Java code. The new jdk.CPUTimeSample also takes into account methods executing in native code, for example, a call to a native method using the new [FFM API](https://openjdk.org/jeps/454) added in JDK 22. The feature builds on JEP 518: JFR Cooperative Sampling to ensure that the stack can be walked safely.
+[JEP 509: JFR CPU-Time Profiling (Experimental)](https://openjdk.org/jeps/509) contains an experimental Linux-only event that uses [SIGPROF](https://www.gnu.org/software/libc/manual/html_node/Alarm-Signals.html) to record method samples. The current method sampling event, jdk.ExecutionSample, works on all platforms, but it only samples methods running Java code. The new jdk.CPUTimeSample also takes into account methods executing in native code, for example, a call to a native method using the new [FFM API](https://openjdk.org/jeps/454) added in JDK 22. The feature builds on JEP 518: JFR Cooperative Sampling to ensure that the stack can be walked safely. To try out CPU-time profiling on Linux, use the following commands:
+
+    $ java -XX:StartFlightRecording:jdk.jdk.CPUTimeSample#enabled=true,filename=recording.jfr
+    $ jfr view cpu-time-hot-methods
 
 ## JEP 520: JFR Method Timing & Tracing
 
@@ -27,16 +45,16 @@ JDK 25, to be released on [September 16](https://openjdk.org/projects/jdk/25/), 
 
 ![Method Tracer GUI]({{ site.baseurl }}/assets/method-tracer-ui.png){: class="center_85" }
 
-The source code will be available on GitHub when early-access builds are released, allowing you to run the application like this:
+The source code will be available on GitHub when early-access builds are released, allowing you to run the application like below:
 
     $ git clone https://github.com/flight-recorder/method-tracer 
     $ java method-tracer/MethodTracer.java
 
-The application is Swing-based and can connect to either a local or remote application over [JMX](https://docs.oracle.com/en/java/javase/24/jmx/introduction-jmx-technology.html). It uses [JFR Event Streaming](https://openjdk.org/jeps/349) and [Remote Recording Streaming](https://egahlin.github.io/2021/05/17/remote-recording-stream.html) for data transfer. You can try it out when [early-access builds](https://jdk.java.net/25/) of the JEP are available (expected in build 26). If you find issues, please report them to the [hotspot-jfr-dev](https://mail.openjdk.org/mailman/listinfo/hotspot-jfr-dev) mailing list or send a direct message to [@ErikGahlin](https://x.com/ErikGahlin).
+The application is [Swing-based](https://docs.oracle.com/javase/tutorial/uiswing/TOC.html) and can connect to either a local or remote application over [JMX](https://docs.oracle.com/en/java/javase/24/jmx/introduction-jmx-technology.html). It uses [JFR Event Streaming](https://openjdk.org/jeps/349) and [Remote Recording Streaming](https://egahlin.github.io/2021/05/17/remote-recording-stream.html) for data transfer. You can try it out when [early-access builds](https://jdk.java.net/25/) of the JEP are available (expected in build 26). If you find issues, please report them to the [hotspot-jfr-dev](https://mail.openjdk.org/mailman/listinfo/hotspot-jfr-dev) mailing list or send a direct message to [@ErikGahlin](https://x.com/ErikGahlin).
 
-## Updates to jfr command
+## Updates to the jfr command
 
-The [**jfr command**](https://docs.oracle.com/en/java/javase/24/docs/specs/man/jfr.html) has been updated. If you use ‘jfr scrub’, the tool now prints if an event was removed. This confirms the removal of sensitive information from the recording.
+The **jfr command** has been updated. If you use ‘jfr scrub’, the tool now prints if an event was removed. This confirms the removal of sensitive information from the recording.
 
     $ jfr scrub --exclude-events jdk.InitialSystemProperty,jdk.InitialEnvironmentVariable s.jfr
     Removed events:
@@ -89,7 +107,7 @@ The **-XX:StartFlightRecording** command gets a new option called report-on-exit
     java.security.Security.<clinit>()                                                      1  7.570000 ms
      ...
 
-Another example of the report-on-exit option is to print a summary of GC pauses when the application exits:
+Another example of the **report-on-exit** option is to print a summary of GC pauses when the application exits:
 
     $ java -XX:StartFlightRecording:report-on-exit=gc-pauses -jar J2Ddemo.jar
     
@@ -201,6 +219,8 @@ If an order in the order service stalls due to lock contention, a user interface
        ...
      ]
     }
+
+## Removal of the Security Manager
 
 With JDK 24, the Security Manager was [permanently disabled](https://openjdk.org/jeps/486), which allowed for the removal of around 3,000 lines of JFR code in JDK 25. You may notice this as faster startup when using JFR, as the number of classes that need to be loaded is reduced. But more importantly, OpenJDK developers no longer need to analyze every new feature to make it work with the Security Manager.
 
