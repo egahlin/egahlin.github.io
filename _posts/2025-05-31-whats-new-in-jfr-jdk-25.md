@@ -10,7 +10,7 @@ tags: [JFR, JDK 25, Event]
 
 JDK 25, to be released on [September 16](https://openjdk.org/projects/jdk/25/), will contain three new Java Enhancement Proposals (JEPs) for JFR.
 
-The first, [JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518), reworks how method sampling is done in the [HotSpot JVM](https://wiki.openjdk.org/display/HotSpot). Stack walking now only happens from a [safepoint](https://openjdk.org/groups/hotspot/docs/HotSpotGlossary.html#safepoint), but without safepoint bias that traditional [JVM TI](https://docs.oracle.com/en/java/javase/22/docs/specs/jvmti.html)-based method samplers suffer from. This results in stack walking will being safer when used together with [ZGC](https://wiki.openjdk.org/display/zgc/Main), and it makes the method sampler more scalable since stack walking can now happen in multiple threads simultaneously. A new experimental event is added, called SafepointLatency, which records the time it takes for a method to reach a safepoint. It’s disabled by default, but you can enable it like this:
+The first, [JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518), reworks how method sampling is done in the [HotSpot JVM](https://wiki.openjdk.org/display/HotSpot). Stack walking now only happens from a [safepoint](https://openjdk.org/groups/hotspot/docs/HotSpotGlossary.html#safepoint), but without safepoint bias that traditional [JVM TI](https://docs.oracle.com/en/java/javase/22/docs/specs/jvmti.html)-based method samplers suffer from. This results in stack walking will being safer when used together with [ZGC](https://wiki.openjdk.org/display/zgc/Main), and it makes the method sampler more scalable since stack walking can now happen in multiple threads simultaneously. A new experimental event is added, called **SafepointLatency**, which records the time it takes for a method to reach a safepoint. It’s disabled by default, but you can enable it like this:
 
     $ java -XX:StartFlightRecording:jdk.SafepointLatency#enabled=true,filename=s.jfr …
     $ jfr print --events jdk.SafepointLatency s.jfr
@@ -21,7 +21,7 @@ The third, [JEP 520: JFR Method Timing & Tracing](https://openjdk.org/jeps/520),
 
 ![Method Tracer GUI]({{ site.baseurl }}/assets/method-tracer-ui.png){: class="center_85" }
 
-The source code is available on GitHub, and you can run the application like this:
+The source code will be available on GitHub when early-access are available, and then you can run the application like this:
 
     $ git clone https://github.com/flight-recorder/method-tracer 
     $ java method-tracer/MethodTracer.java
@@ -35,7 +35,7 @@ The [‘jfr’ command](https://docs.oracle.com/en/java/javase/24/docs/specs/man
     jdk.InitialEnvironmentVariable 23/23
     jdk.InitialSystemProperty      15/15
 
-The ‘jfr print’ command adds a new option “--exact” that prints timestamp, timespan, and memory data with full precision. For example:
+The **jfr print** command adds a new option **--exact** that prints timestamp, timespan, and memory data with full precision. For example:
 
     $ jfr print --exact recording.jfr
     jdk.JavaMonitorWait {
@@ -58,7 +58,7 @@ The ‘jfr print’ command adds a new option “--exact” that prints timestam
 
 This can be useful if you want to compare exact values with a previous run or need exact information in bug reports. For more information, see the [CSR](https://bugs.openjdk.org/browse/JDK-8354195)
 
-The -XX:StartFlightRecording command gets a new option called report-on-exit. This can be used to print a report/view when the JVM exits. For more information about views, see this [blog post](https://egahlin.github.io/2023/05/30/views.html). In the following example, the new method timing event is used to print the time it took for class initializer to execute. This is useful if you want to find places where code could be improved to reduce startup.
+The **-XX:StartFlightRecording** command gets a new option called report-on-exit. This can be used to print a report/view when the JVM exits. For more information about views, see this [blog post](https://egahlin.github.io/2023/05/30/views.html). In the following example, the new method timing event is used to print the time it took for class initializer to execute. This is useful if you want to find places where code could be improved to reduce startup.
 
     $ java '-XX:StartFlightRecording:method-timing=::<clinit>,report-on-exit=method-timing' -jar J2Ddemo.jar
    
@@ -164,7 +164,7 @@ To track details within an order service, an order event can be created where on
       String paymentMethod;
     }
 
-If an order in the order service stalls due to lock contention, a user interface can display contextual information together with the JavaMonitorEnter event to simplify troubleshooting, for example:
+If an order in the order service stalls due to lock contention, a user interface can display contextual information together with the **JavaMonitorEnter** event to simplify troubleshooting, for example:
 
     $ jfr print --events JavaMonitorEnter recording.jfr
     jdk.JavaMonitorEnter {
