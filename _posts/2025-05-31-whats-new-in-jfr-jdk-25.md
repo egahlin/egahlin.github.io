@@ -25,7 +25,7 @@ The source code is available on GitHub, and you can run the application like thi
     $ git clone https://github.com/flight-recorder/method-tracer 
     $ java method-tracer/MethodTracer.java
 
-The application is Swing-based and can connect to a local or remote application over [JMX](https://docs.oracle.com/en/java/javase/24/jmx/introduction-jmx-technology.html). It uses [JFR Event Streaming](https://openjdk.org/jeps/349) and [Remote EventStreaming](https://egahlin.github.io/2021/05/17/remote-recording-stream.html) for data transfer. You can try it out when [early-access builds](https://jdk.java.net/25/) of the JEP are available (expected in build 26). If you find issues, please report them to the [hotspot-jfr-dev](https://mail.openjdk.org/mailman/listinfo/hotspot-jfr-dev) mailing list or send a direct message to [https://x.com/ErikGahlin](@ErikGahlin).
+The application is Swing-based and can connect to a local or remote application over [JMX](https://docs.oracle.com/en/java/javase/24/jmx/introduction-jmx-technology.html). It uses [JFR Event Streaming](https://openjdk.org/jeps/349) and [Remote Recording Streaming](https://egahlin.github.io/2021/05/17/remote-recording-stream.html) for data transfer. You can try it out when [early-access builds](https://jdk.java.net/25/) of the JEP are available (expected in build 26). If you find issues, please report them to the [hotspot-jfr-dev](https://mail.openjdk.org/mailman/listinfo/hotspot-jfr-dev) mailing list or send a direct message to [@ErikGahlin](https://x.com/ErikGahlin).
 
 The [‘jfr’ command](https://docs.oracle.com/en/java/javase/24/docs/specs/man/jfr.html) has been updated. If you use ‘jfr scrub’, the tool now prints if an event was removed. This validates that sensitive information is no longer part of the recording.
 
@@ -80,7 +80,7 @@ The -XX:StartFlightRecording command gets a new option called report-on-exit. Th
 Another example of the report-on-exit option is to print a summary of GC pauses when the application exits:
 
     $ java -XX:StartFlightRecording:report-on-exit=gc-pauses -jar -jar J2Ddemo.jar
-    
+   
     GC Pauses
 -    --------
     
@@ -105,9 +105,9 @@ Another example of the report-on-exit option is to print a summary of GC pauses 
     Maximum Pause Time: 21.7 ms
     
 
-For more information about the feature, see the [CSR](https://bugs.openjdk.org/browse/JDK-8351370) or use the new [-XX:StartFlightRecording:help9(https://bugs.openjdk.org/browse/JDK-8326338) command introduced in [JDK 24](https://openjdk.org/projects/jdk/24/).
+For more information about the feature, see the [CSR](https://bugs.openjdk.org/browse/JDK-8351370) or use the new [-XX:StartFlightRecording:help](https://bugs.openjdk.org/browse/JDK-8326338) command introduced in [JDK 24](https://openjdk.org/projects/jdk/24/).
 
-JDK 25 will add support for rate-limited sampling of user-defined events. For example, you may want to track data that are posted to a queue at a very high frequency. Recording every event can cause the recording to be filled with queue-related events, potentially displacing other important data. By annotating your event with @Throttle, you can set an upper limit. For example:
+JDK 25 will add support for [Rate-limited sampling of Java events](https://bugs.openjdk.org/browse/JDK-8351594). For example, you may want to track data that are posted to a queue at a very high frequency. Recording every event can cause the recording to be filled with queue-related events, potentially displacing other important data. By annotating your event with @Throttle, you can set an upper limit of the number of events per seond. For example:
  
     @Throttle(“300/s”) @Label(“Post Message”)
     @Name(“example.PostMessage”)
@@ -130,7 +130,6 @@ Event objects that are throttled cannot be reused. The reason for this is that t
 
      $ java -XX:StartFlightRecording:example.PostMessage#throttle=off …
      
- 
 JDK 25 also come with a new annotation to help tools visualize the contextual information. Contextual information is data that applies to all events happening in the same thread from the beginning to the end of the event with a field annotated with Contextual.
 
 For example, to trace requests or transactions in a system, a trace event can be created to provide context.
