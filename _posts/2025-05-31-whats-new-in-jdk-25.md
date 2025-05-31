@@ -8,16 +8,22 @@ image:  "/assets/method-tracer-ui.png"
 tags: [JFR, JDK 25, Event]
 ---
 
-JDK 25, to be released on [September 16](https://openjdk.org/projects/jdk/25/), will contain three new Java Enhancement Proposals (JEPs) for JFR.
+JDK 25, to be released on [September 16](https://openjdk.org/projects/jdk/25/), will contain three new Java Enhancement Proposals (JEPs) for JFR and several enhancement to the jdk.jfr API and the jfr command.
 
-The first, [JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518), reworks how method sampling is done in the [HotSpot JVM](https://wiki.openjdk.org/display/HotSpot). Stack walking now only happens from a [safepoint](https://openjdk.org/groups/hotspot/docs/HotSpotGlossary.html#safepoint), but without safepoint bias that [JVM TI](https://docs.oracle.com/en/java/javase/22/docs/specs/jvmti.html)-based method samplers suffer from. This results in stack walking being safer when used together with [ZGC](https://wiki.openjdk.org/display/zgc/Main), and it makes the method sampler more scalable since stack walking can now happen in multiple threads simultaneously. A new experimental event has been added, called **SafepointLatency**, which records the time it takes for a method to reach a safepoint. It’s disabled by default, but you can enable it like this:
+###JEP 518: JFR Cooperative Sampling###
+
+[JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518) reworks how method sampling is done in the [HotSpot JVM](https://wiki.openjdk.org/display/HotSpot). Stack walking now only happens from a [safepoint](https://openjdk.org/groups/hotspot/docs/HotSpotGlossary.html#safepoint), but without safepoint bias that [JVM TI](https://docs.oracle.com/en/java/javase/22/docs/specs/jvmti.html)-based method samplers suffer from. This results in stack walking being safer when used together with [ZGC](https://wiki.openjdk.org/display/zgc/Main), and it makes the method sampler more scalable since stack walking can now happen in multiple threads simultaneously. A new experimental event has been added, called **SafepointLatency**, which records the time it takes for a method to reach a safepoint. It’s disabled by default, but you can enable it like this:
 
     $ java -XX:StartFlightRecording:jdk.SafepointLatency#enabled=true,filename=s.jfr …
     $ jfr print --events jdk.SafepointLatency s.jfr
 
-The second, [JEP 509: JFR CPU-Time Profiling (Experimental)](https://openjdk.org/jeps/509), contains an experimental Linux-only event that uses [SIGPROF](https://www.gnu.org/software/libc/manual/html_node/Alarm-Signals.html) to record method samples. The current method sampling event, jdk.ExecutionSample, works on all platforms, but it only samples methods running Java code. The new jdk.CPUTimeSample also takes into account methods executing in native code, for example, a call to a native method using the new [FFM API](https://openjdk.org/jeps/454) added in JDK 22. The feature builds on JEP 518: JFR Cooperative Sampling to ensure that the stack can be walked safely.
+###JEP 509: JFR CPU-Time Profiling###
 
-The third, [JEP 520: JFR Method Timing & Tracing](https://openjdk.org/jeps/520), adds two new events to trace and time methods. Timing and tracing method invocations can help identify performance bottlenecks, optimize code, and find the root causes of bugs. The JEP text demonstrates several command-line examples, so they will not be repeated here. However, I created a simple GUI to validate the design and demonstrate how tools can leverage the events.
+[JEP 509: JFR CPU-Time Profiling (Experimental)](https://openjdk.org/jeps/509) contains an experimental Linux-only event that uses [SIGPROF](https://www.gnu.org/software/libc/manual/html_node/Alarm-Signals.html) to record method samples. The current method sampling event, jdk.ExecutionSample, works on all platforms, but it only samples methods running Java code. The new jdk.CPUTimeSample also takes into account methods executing in native code, for example, a call to a native method using the new [FFM API](https://openjdk.org/jeps/454) added in JDK 22. The feature builds on JEP 518: JFR Cooperative Sampling to ensure that the stack can be walked safely.
+
+###JEP 520: JFR Method Timing & Tracing###
+
+[JEP 520: JFR Method Timing & Tracing](https://openjdk.org/jeps/520 adds two new events to trace and time methods. Timing and tracing method invocations can help identify performance bottlenecks, optimize code, and find the root causes of bugs. The JEP text demonstrates several command-line examples, so they will not be repeated here. However, I created a simple GUI to validate the design and demonstrate how tools can leverage the events.
 
 ![Method Tracer GUI]({{ site.baseurl }}/assets/method-tracer-ui.png){: class="center_85" }
 
@@ -27,6 +33,8 @@ The source code will be available on GitHub when early-access builds are release
     $ java method-tracer/MethodTracer.java
 
 The application is Swing-based and can connect to either a local or remote application over [JMX](https://docs.oracle.com/en/java/javase/24/jmx/introduction-jmx-technology.html). It uses [JFR Event Streaming](https://openjdk.org/jeps/349) and [Remote Recording Streaming](https://egahlin.github.io/2021/05/17/remote-recording-stream.html) for data transfer. You can try it out when [early-access builds](https://jdk.java.net/25/) of the JEP are available (expected in build 26). If you find issues, please report them to the [hotspot-jfr-dev](https://mail.openjdk.org/mailman/listinfo/hotspot-jfr-dev) mailing list or send a direct message to [@ErikGahlin](https://x.com/ErikGahlin).
+
+### jfr command ###
 
 The [**jfr command**](https://docs.oracle.com/en/java/javase/24/docs/specs/man/jfr.html) has been updated. If you use ‘jfr scrub’, the tool now prints if an event was removed. This confirms the removal of sensitive information from the recording.
 
@@ -57,6 +65,9 @@ The **jfr print** command adds a new option **--exact** that prints timestamps, 
     }
 
 This can be useful if you want to compare exact values with a previous run or if you need exact information in bug reports. For more information, see the [CSR](https://bugs.openjdk.org/browse/JDK-8354195).
+
+
+####report-on-exit###
 
 The **-XX:StartFlightRecording** command gets a new option called report-on-exit. This can be used to print a report/view when the JVM exits. For more information about views, see this [blog post](https://egahlin.github.io/2023/05/30/views.html). In the following example, the new method timing event is used to print the time it took for class initializer to execute. This is useful if you want to find places where code could be improved to reduce application startup time.
 
@@ -108,6 +119,8 @@ Another example of the report-on-exit option is to print a summary of GC pauses 
 
 For more information about the feature, see the [CSR](https://bugs.openjdk.org/browse/JDK-8351370) or use the new [-XX:StartFlightRecording:help](https://bugs.openjdk.org/browse/JDK-8326338) command introduced in [JDK 24](https://openjdk.org/projects/jdk/24/).
 
+###Rate-limited Sampling###
+
 JDK 25 will add support for [Rate-limited sampling of Java events](https://bugs.openjdk.org/browse/JDK-8351594). For example, you may want to track data that is posted to a queue at a very high frequency. Recording every event may result in the recording file becoming filled with queue-related events, potentially displacing other important data. By annotating your event with @Throttle, you can set an upper limit of the number of events per second. For example:
 
     @Throttle(“300/s”) @Label(“Post Message”)
@@ -131,6 +144,9 @@ Event objects that are throttled cannot be reused. The reason for this is that t
 
      $ java -XX:StartFlightRecording:example.PostMessage#throttle=off …
      
+
+###Contextual Events###
+
 JDK 25 also comes with a new annotation to help tools visualize contextual information. Contextual information refers to data shared across all events in the same thread during the lifespan of an event annotated with **@Contextual**.
 
 For example, to trace requests or transactions in a system, a trace event can be created to provide context.
