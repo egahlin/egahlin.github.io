@@ -60,7 +60,7 @@ The **jfr scrub** command is used to remove sensitive information, such as value
     jdk.InitialEnvironmentVariable 23/23
     jdk.InitialSystemProperty      15/15
 
-The **jfr print** command adds a new option **--exact** that prints timestamps, timespans, and memory data with full precision. For example:
+Another update to the **jfr** tool is the new option to the **print** command: **--exact**. It prints timestamps, timespans, and memory data with full precision. For example:
 
     $ jfr print --exact recording.jfr
     jdk.JavaMonitorWait {
@@ -84,7 +84,7 @@ Exact values are useful for comparing results across multiple runs or for includ
 
 ## New report-on-exit Option
 
-The **-XX:StartFlightRecording** option gets a new sub-option called **report-on-exit** that can be used to print a report/view when the JVM exits. For more information about views, see my earlier [blog post](https://egahlin.github.io/2023/05/30/views.html). In the following example, the new method timing event is used to print the time it took for class initializers to execute, which can be useful when optimizing application startup time.
+The **-XX:StartFlightRecording** option gets a new sub-option called **report-on-exit** that prints a report/view when the JVM exits. For more information about views, see my earlier [blog post](https://egahlin.github.io/2023/05/30/views.html). In the following example, the new method timing event is used to print the time it took for class initializers to execute, which can be useful when optimizing the startup time of your application.
 
     $ java '-XX:StartFlightRecording:method-timing=::<clinit>,report-on-exit=method-timing' -jar J2Ddemo.jar
    
@@ -151,14 +151,14 @@ JDK 25 will add support for [Rate-limited sampling of Java events](https://bugs.
       channel.publish(message);
       PostMessageEvent e = new PostMessageEvent();
       if (e.shouldCommit()) {
-        e.message = message.length() < 26 ? message : message.substring(0,22) + “…”;
+        e.message = message.length() < 26 ? message : message.substring(0,22) + “...”;
         e.commit();
       }
     }
 
 Event objects that are throttled cannot be reused because they must hold their sample state between a call to shouldCommit() and commit(). Like other event settings, throttling can be controlled from the command line. The following example shows how throttling can be disabled so that all events are emitted:
 
-     $ java -XX:StartFlightRecording:example.PostMessage#throttle=off …
+     $ java -XX:StartFlightRecording:example.PostMessage#throttle=off ...
 
 ## Contextual Events
 
