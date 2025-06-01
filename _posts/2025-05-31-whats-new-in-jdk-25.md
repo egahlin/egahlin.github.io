@@ -12,7 +12,7 @@ JDK 25, to be released on [September 16](https://openjdk.org/projects/jdk/25/), 
 
 ## JEP 518: JFR Cooperative Sampling
 
-[JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518) reworks the method sampling mechanism in the [HotSpot JVM](https://wiki.openjdk.org/display/HotSpot). Stack walking now only happens from a [safepoint](https://openjdk.org/groups/hotspot/docs/HotSpotGlossary.html#safepoint), but without the safepoint bias that [JVM TI](https://docs.oracle.com/en/java/javase/22/docs/specs/jvmti.html)-based method samplers suffer from. The result is safer stack walking when used together with the [ZGC](https://wiki.openjdk.org/display/zgc/Main) garbage collector, and a more scalable method sampler where stack walking can happen in multiple threads simultaneously. A new experimental event, **SafepointLatency**, has been added, which records the time it takes for a thread to reach a safepoint. You can enable it with:
+[JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518) reworks the method sampling mechanism in the [HotSpot JVM](https://wiki.openjdk.org/display/HotSpot). Stack walking now only happens from a [safepoint](https://openjdk.org/groups/hotspot/docs/HotSpotGlossary.html#safepoint), but without the safepoint bias that [JVM TI](https://docs.oracle.com/en/java/javase/22/docs/specs/jvmti.html)-based method samplers suffer from. The result is safer stack walking when used together with the [ZGC](https://wiki.openjdk.org/display/zgc/Main) garbage collector, and a more scalable method sampler where stack walking can happen in multiple threads simultaneously. The JEP also adds a new experimental event, **SafepointLatency**, which records the time it takes for a thread to reach a safepoint. It can be enabled on the command line as follows:
 
     $ java -XX:StartFlightRecording:jdk.SafepointLatency#enabled=true,filename=recording.jfr
     $ jfr print --events jdk.SafepointLatency recording.jfr
@@ -40,7 +40,7 @@ JDK 25, to be released on [September 16](https://openjdk.org/projects/jdk/25/), 
 
 ## JEP 520: JFR Method Timing & Tracing
 
-[JEP 520: JFR Method Timing & Tracing](https://openjdk.org/jeps/520) adds two new events to trace and time methods. Timing and tracing method invocations can help identify performance bottlenecks, optimize code, and find the root causes of bugs. The JEP text demonstrates several command-line examples, so they will not be repeated here. Instead, I will display a simple GUI I created to validate the design and to demonstrate to third-party tools how they can use the JFR APIs with the two new the events.
+[JEP 520: JFR Method Timing & Tracing](https://openjdk.org/jeps/520) adds two new events to trace and time methods. Timing and tracing method invocations can help identify performance bottlenecks, optimize code, and find the root causes of bugs. The JEP text demonstrates several command-line examples, so they will not be repeated here. Instead, I will display a simple GUI I created to validate the design and to demonstrate how third-party tools can use the JFR APIs with the two new the events.
 
 ![Method Tracer GUI]({{ site.baseurl }}/assets/method-tracer-ui.png){: class="center_85" }
 
