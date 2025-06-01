@@ -8,7 +8,7 @@ image:  "/assets/method-tracer-ui.png"
 tags: [JFR, JDK 25, Event]
 ---
 
-JDK 25, to be released on [September 16](https://openjdk.org/projects/jdk/25/), is set to include three new [Java Enhancement Proposals](https://openjdk.org/jeps/1) (JEPs) for JFR and several enhancements to the [jdk.jfr API](https://docs.oracle.com/en/java/javase/24/docs/api/jdk.jfr/module-summary.html) and the [jfr command](https://docs.oracle.com/en/java/javase/24/docs/specs/man/jfr.html).
+**JDK 25**, to be released on [September 16](https://openjdk.org/projects/jdk/25/), is set to include three new [Java Enhancement Proposals](https://openjdk.org/jeps/1) (JEPs) for JFR and several enhancements to the [jdk.jfr API](https://docs.oracle.com/en/java/javase/24/docs/api/jdk.jfr/module-summary.html) and the [jfr command](https://docs.oracle.com/en/java/javase/24/docs/specs/man/jfr.html).
 
 ## JEP 518: JFR Cooperative Sampling
 
@@ -53,7 +53,7 @@ The application is [Swing-based](https://docs.oracle.com/javase/tutorial/uiswing
 
 ## Updates to the jfr command
 
-The **jfr scrub** command is used to remove sensitive information, such as values stored in system properties or environment variables, from a JFR recording file. Previously, verifying the results of the command required using the **jfr summary** command to compare files before and after scrubbing. In JDK 25, the **jfr scrub** command has been updated to print the number of events that were removed, making it easier to verify that sensitive information has been removed. For example:
+The **jfr scrub** command is used to remove sensitive information, such as values stored in system properties or environment variables, from a JFR recording file. Previously, verifying the results of the command required using the **jfr summary** command to compare files before and after scrubbing. In **JDK 25**, the **jfr scrub** command has been updated to print the number of events that were removed, making it easier to verify that sensitive information has been removed. For example:
 
     $ jfr scrub --exclude-events
       jdk.InitialSystemProperty,jdk.InitialEnvironmentVariable r.jfr scrubbed.jfr
@@ -139,7 +139,7 @@ For more information about the feature, see the [CSR](https://bugs.openjdk.org/b
 
 ## Rate-limited Sampling
 
-JDK 25 will add support for [Rate-limited sampling of Java events](https://bugs.openjdk.org/browse/JDK-8351594). For example, you may want to track data that is posted to a queue at a very high frequency. Recording every event may result in the recording file becoming filled with queue-related events, potentially displacing other important data. By annotating your event with **@Throttle**, you can set an upper limit on the number of events per time unit. For example:
+**JDK 25** will add support for [Rate-limited sampling of Java events](https://bugs.openjdk.org/browse/JDK-8351594). For example, you may want to track data that is posted to a queue at a very high frequency. Recording every event may result in the recording file becoming filled with queue-related events, potentially displacing other important data. By annotating your event with **@Throttle**, you can set an upper limit on the number of events per time unit. For example:
 
     @Throttle(“300/s”)
     @Label(“Post Message”)
@@ -155,9 +155,9 @@ JDK 25 will add support for [Rate-limited sampling of Java events](https://bugs.
       PostMessageEvent e = new PostMessageEvent();
       if (e.shouldCommit()) {
         if (message.length() < 26) {
-          c.message = message;
+          e.message = message;
         } else {
-          e.message = essage.substring(0,22) + “...”;
+          e.message = message.substring(0, 22) + “...”;
         }
         e.commit();
       }
@@ -169,7 +169,7 @@ Event objects that are throttled cannot be reused because they must hold their s
 
 ## Contextual Events
 
-JDK 25 comes with a new annotation to help tools visualize contextual information. Contextual information here refers to data shared across all events in the same thread during the lifespan of an event annotated with **@Contextual**.
+**JDK 25** comes with a new annotation to help tools visualize contextual information. Contextual information here refers to data shared across all events in the same thread during the lifespan of an event annotated with **@Contextual**.
 
 For example, to trace requests or transactions in a system, a trace event can be created to provide context.
 
@@ -226,6 +226,6 @@ If an order in the order service stalls due to lock contention, a user interface
 
 ## Removal of the Security Manager
 
-With JDK 24, the Security Manager was [permanently disabled](https://openjdk.org/jeps/486), which allowed for the removal of around 3,000 lines of JFR code in JDK 25. You may notice this as faster startup when using JFR, as the number of classes that need to be loaded is reduced. But more importantly, OpenJDK developers no longer need to analyze every new feature to make it work with the Security Manager.
+With JDK 24, the Security Manager was [permanently disabled](https://openjdk.org/jeps/486), which allowed for the removal of around 3,000 lines of JFR code in **JDK 25**. You may notice this as faster startup when using JFR, as the number of classes that need to be loaded is reduced. But more importantly, OpenJDK developers no longer need to analyze every new feature to make it work with the Security Manager.
 
 Going forward, expect a more rapid stream of enhancements!
