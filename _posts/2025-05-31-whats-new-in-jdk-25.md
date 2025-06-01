@@ -226,6 +226,6 @@ If an order in the order service stalls due to lock contention, a user interface
 
 ## Removal of the Security Manager
 
-With JDK 24, the Security Manager was [permanently disabled](https://openjdk.org/jeps/486), which allowed for the removal of around 3,000 lines of JFR code in **JDK 25**. You may notice this as faster startup when using JFR, as the number of classes that need to be loaded is reduced. But more importantly, OpenJDK developers no longer need to analyze every new feature to make it work with the Security Manager.
+With **JDK 24**, the Security Manager was [permanently disabled](https://openjdk.org/jeps/486), which allowed for the removal of around 3,000 lines of JFR code in **JDK 25**. You may notice this as faster startup when using JFR, as the number of classes that need to be loaded is reduced. But more importantly, OpenJDK developers no longer need to analyze every new feature to make it work with the Security Manager.
 
 Going forward, expect a more rapid stream of enhancements!
