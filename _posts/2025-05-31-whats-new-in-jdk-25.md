@@ -12,7 +12,7 @@ tags: [JFR, JDK 25, Event]
 
 ## JEP 518: JFR Cooperative Sampling
 
-[JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518) reworks the method sampling mechanism in the [HotSpot JVM](https://wiki.openjdk.org/display/HotSpot). Stack walking now happens from a [safepoint](https://openjdk.org/groups/hotspot/docs/HotSpotGlossary.html#safepoint), but without the safepoint bias that [JVM TI](https://docs.oracle.com/en/java/javase/22/docs/specs/jvmti.html)-based profilers suffer from. The result is safer stack walking with [ZGC](https://wiki.openjdk.org/display/zgc/Main) and a more scalable method sampler that supports concurrent stack walking. The JEP also adds a new experimental event, **SafepointLatency**, which records the time it takes for a thread to reach a safepoint. The JEP has not yet been integrated, but it's out for review. If it is accepted in time for [Rampdown Phase One](https://openjdk.org/jeps/3#rdp-1), you can enable it on the command line as follows:
+[JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518) reworks the method sampling mechanism in the [HotSpot JVM](https://wiki.openjdk.org/display/HotSpot). Stack walking now happens from a [safepoint](https://openjdk.org/groups/hotspot/docs/HotSpotGlossary.html#safepoint), but without the safepoint bias that [JVM TI](https://docs.oracle.com/en/java/javase/22/docs/specs/jvmti.html)-based profilers suffer from. The result is safer stack walking with [ZGC](https://wiki.openjdk.org/display/zgc/Main) and a more scalable method sampler that supports concurrent stack walking. The JEP also adds a new experimental event, **SafepointLatency**, which records the time it takes for a thread to reach a safepoint. You can enable it on the command line as follows:
 
     $ java -XX:StartFlightRecording:jdk.SafepointLatency#enabled=true,filename=r.jfr
     $ jfr print --events jdk.SafepointLatency r.jfr
@@ -40,6 +40,9 @@ tags: [JFR, JDK 25, Event]
 
     $ java -XX:StartFlightRecording:jdk.CPUTimeSample#enabled=true,filename=c.jfr
     $ jfr view cpu-time-hot-methods c.jfr
+
+
+The JEP is still out for review, but if it is integrated in time for [Rampdown Phase One](https://openjdk.org/jeps/3#rdp-1), it will be available in JDK 25.
 
 ## JEP 520: JFR Method Timing & Tracing
 
