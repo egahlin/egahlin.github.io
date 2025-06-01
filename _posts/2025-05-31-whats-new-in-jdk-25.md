@@ -42,7 +42,7 @@ tags: [JFR, JDK 25, Event]
     $ jfr view cpu-time-hot-methods c.jfr
 
 
-The JEP is still out for review, but if it is integrated in time for [Rampdown Phase One](https://openjdk.org/jeps/3#rdp-1), it will be available in JDK 25.
+The JEP is still out for review, but if it is integrated in time for [Rampdown Phase One](https://openjdk.org/jeps/3#rdp-1), it will be available in **JDK 25**.
 
 ## JEP 520: JFR Method Timing & Tracing
 
