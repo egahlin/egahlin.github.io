@@ -12,7 +12,7 @@ JDK 25, to be released on [September 16](https://openjdk.org/projects/jdk/25/), 
 
 ## JEP 518: JFR Cooperative Sampling
 
-[JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518) reworks the method sampling mechanism in the [HotSpot JVM](https://wiki.openjdk.org/display/HotSpot). Stack walking now only happens from a [safepoint](https://openjdk.org/groups/hotspot/docs/HotSpotGlossary.html#safepoint), but without the safepoint bias that [JVM TI](https://docs.oracle.com/en/java/javase/22/docs/specs/jvmti.html)-based method samplers suffer from. The result is safer stack walking when used together with the [ZGC](https://wiki.openjdk.org/display/zgc/Main) garbage collector, and a more scalable method sampler where stack walking can happen in multiple threads simultaneously. The JEP also adds a new experimental event, **SafepointLatency**, which records the time it takes for a thread to reach a safepoint. It can be enabled on the command line as follows:
+[JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518) reworks the method sampling mechanism in the [HotSpot JVM](https://wiki.openjdk.org/display/HotSpot). Stack walking now happens from a [safepoint](https://openjdk.org/groups/hotspot/docs/HotSpotGlossary.html#safepoint), but without the safepoint bias that [JVM TI](https://docs.oracle.com/en/java/javase/22/docs/specs/jvmti.html)-based profilers suffer from. The result is safer stack walking with [ZGC](https://wiki.openjdk.org/display/zgc/Main) and a more scalable method sampler that supports concurrent stack walking. The JEP also adds a new experimental event, **SafepointLatency**, which records the time it takes for a thread to reach a safepoint. You can enable it on the command line as follows:
 
     $ java -XX:StartFlightRecording:jdk.SafepointLatency#enabled=true,filename=recording.jfr
     $ jfr print --events jdk.SafepointLatency recording.jfr
@@ -80,6 +80,7 @@ Another update to the **jfr** tool is the new option to the **print** command: *
       ...
      ]
     }
+
 Exact values are useful for comparing results across multiple runs or for including precise information in bug reports. See the [CSR](https://bugs.openjdk.org/browse/JDK-8354195) for more details.
 
 ## New report-on-exit Option
