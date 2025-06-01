@@ -56,7 +56,7 @@ The application is [Swing-based](https://docs.oracle.com/javase/tutorial/uiswing
 The **jfr scrub** command is used to remove sensitive information, such as values stored in system properties or environment variables, from a JFR recording file. Previously, verifying the results of the command required using the **jfr summary** command to compare files before and after scrubbing. In JDK 25, the **jfr scrub** command has been updated to print the number of events that were removed, making it easier to verify that sensitive information has been removed. For example:
 
     $ jfr scrub --exclude-events
-     jdk.InitialSystemProperty,jdk.InitialEnvironmentVariable rec.jfr scrubbed.jfr
+      jdk.InitialSystemProperty,jdk.InitialEnvironmentVariable r.jfr scrubbed.jfr
     Removed events:
     jdk.InitialEnvironmentVariable 23/23
     jdk.InitialSystemProperty      15/15
@@ -93,18 +93,18 @@ The **-XX:StartFlightRecording** option gets a new sub-option called **report-on
    
                                             Method Timing
     
-    Timed Method                                                   Invocations Average Time
-    -------------------------------------------------------------------------- ------------
-    java.awt.GraphicsEnvironment$LocalGE.<clinit>()                          1 39.200000 ms
-    sun.font.HBShaper.<clinit>()                                             1 32.400000 ms
-    java2d.DemoFonts.<clinit>()                                              1 21.400000 ms
-    java.nio.file.TempFileHelper.<clinit>()                                  1 16.200000 ms
-    java.awt.Component.<clinit>()                                            1 14.300000 ms
-    sun.font.SunFontManager.<clinit>()                                       1 10.900000 ms
-    sun.java2d.SurfaceData.<clinit>()                                        1  9.480000 ms
-    java.awt.Toolkit.<clinit>()                                              1  8.500000 ms
-    java.awt.Font.<clinit>()                                                 1  8.330000 ms
-    java.security.Security.<clinit>()                                        1  7.570000 ms
+    Timed Method                                         Invocations Average Time
+    -----------------------------------------------------------------------------
+    java.awt.GraphicsEnvironment$LocalGE.<clinit>()                1 39.200000 ms
+    sun.font.HBShaper.<clinit>()                                   1 32.400000 ms
+    java2d.DemoFonts.<clinit>()                                    1 21.400000 ms
+    java.nio.file.TempFileHelper.<clinit>()                        1 16.200000 ms
+    java.awt.Component.<clinit>()                                  1 14.300000 ms
+    sun.font.SunFontManager.<clinit>()                             1 10.900000 ms
+    sun.java2d.SurfaceData.<clinit>()                              1  9.480000 ms
+    java.awt.Toolkit.<clinit>()                                    1  8.500000 ms
+    java.awt.Font.<clinit>()                                       1  8.330000 ms
+    java.security.Security.<clinit>()                              1  7.570000 ms
      ...
 
 Another example of the **report-on-exit** option is to print a summary of GC pauses when the application exits:
