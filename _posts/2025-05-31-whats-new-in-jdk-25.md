@@ -14,18 +14,18 @@ JDK 25, to be released on [September 16](https://openjdk.org/projects/jdk/25/), 
 
 [JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518) reworks the method sampling mechanism in the [HotSpot JVM](https://wiki.openjdk.org/display/HotSpot). Stack walking now happens from a [safepoint](https://openjdk.org/groups/hotspot/docs/HotSpotGlossary.html#safepoint), but without the safepoint bias that [JVM TI](https://docs.oracle.com/en/java/javase/22/docs/specs/jvmti.html)-based profilers suffer from. The result is safer stack walking with [ZGC](https://wiki.openjdk.org/display/zgc/Main) and a more scalable method sampler that supports concurrent stack walking. The JEP also adds a new experimental event, **SafepointLatency**, which records the time it takes for a thread to reach a safepoint. You can enable it on the command line as follows:
 
-    $ java -XX:StartFlightRecording:jdk.SafepointLatency#enabled=true,filename=recording.jfr
-    $ jfr print --events jdk.SafepointLatency recording.jfr
+    $ java -XX:StartFlightRecording:jdk.SafepointLatency#enabled=true,filename=r.jfr
+    $ jfr print --events jdk.SafepointLatency r.jfr
     jdk.SafepointLatency {
     startTime = 23:57:39.856 (2025-05-31)
     duration = 0.0283 ms
     threadState = "_thread_in_Java"
     eventThread = "AWT-EventQueue-0" (javaThreadId = 32)
     stackTrace = [
-      sun.java2d.marlin.MarlinTileGenerator.getAlphaNoRLE(byte[], int, int) line: 268
+      sun.java2d.marlin.MarlinTileGenerator.getAlphaNoRLE(byte[], int) line: 268
       sun.java2d.marlin.MarlinTileGenerator.getAlpha(byte[], int, int) line: 193
       sun.java2d.pipe.AAShapePipe.renderTiles(SunGraphics2D, Shape,) line: 204
-      sun.java2d.pipe.AAShapePipe.renderPath(SunGraphics2D, Shape, BasicStroke) line: 150
+      sun.java2d.pipe.AAShapePipe.renderPath(SunGraphics2D, Shape,) line: 150
       sun.java2d.pipe.AAShapePipe.fill(SunGraphics2D, Shape) line: 83
       ...
       ]
@@ -35,8 +35,8 @@ JDK 25, to be released on [September 16](https://openjdk.org/projects/jdk/25/), 
 
 [JEP 509: JFR CPU-Time Profiling (Experimental)](https://openjdk.org/jeps/509) introduces an experimental Linux-only event that uses [SIGPROF](https://www.gnu.org/software/libc/manual/html_node/Alarm-Signals.html) to record method samples. The current method sampling event, **jdk.ExecutionSample**, works on all platforms, but it only samples methods running Java code. The new **jdk.CPUTimeSample** also takes into account methods executing in native code, for example, a call to a native method using the new [FFM API](https://openjdk.org/jeps/454). The feature builds on [JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518) to ensure that stacks can be walked safely. To try out CPU-time profiling on Linux, use the following commands:
 
-    $ java -XX:StartFlightRecording:jdk.CPUTimeSample#enabled=true,filename=recording.jfr
-    $ jfr view cpu-time-hot-methods recording.jfr
+    $ java -XX:StartFlightRecording:jdk.CPUTimeSample#enabled=true,filename=c.jfr
+    $ jfr view cpu-time-hot-methods c.jfr
 
 ## JEP 520: JFR Method Timing & Tracing
 
@@ -55,7 +55,8 @@ The application is [Swing-based](https://docs.oracle.com/javase/tutorial/uiswing
 
 The **jfr scrub** command is used to remove sensitive information, such as values stored in system properties or environment variables, from a JFR recording file. Previously, verifying the results of the command required using the **jfr summary** command to compare files before and after scrubbing. In JDK 25, the **jfr scrub** command has been updated to print the number of events that were removed, making it easier to verify that sensitive information has been removed. For example:
 
-    $ jfr scrub --exclude-events jdk.InitialSystemProperty,jdk.InitialEnvironmentVariable rec.jfr scrubbed.jfr
+    $ jfr scrub --exclude-events
+     jdk.InitialSystemProperty,jdk.InitialEnvironmentVariable rec.jfr scrubbed.jfr
     Removed events:
     jdk.InitialEnvironmentVariable 23/23
     jdk.InitialSystemProperty      15/15
@@ -66,7 +67,7 @@ Another update to the **jfr** tool is the new option to the **print** command: *
     jdk.JavaMonitorWait {
       startTime = 20:30:33.091317500 (2025-05-31)
       duration = 0.033899709 s
-      monitorClass = sun.java2d.metal.MTLRenderQueue$QueueFlusher (classLoader = bootstrap)
+      monitorClass = sun.java2d.metal.QueueFlusher (classLoader = bootstrap)
       notifier = "AWT-EventQueue-0" (javaThreadId = 32)
       timeout = 0.100000000 s
       timedOut = false
@@ -87,22 +88,23 @@ Exact values are useful for comparing results across multiple runs or for includ
 
 The **-XX:StartFlightRecording** option gets a new sub-option called **report-on-exit** that prints a report/view when the JVM exits. For more information about views, see my earlier [blog post](https://egahlin.github.io/2023/05/30/views.html). In the following example, the new method timing event is used to print the time it took for class initializers to execute, which can be useful when optimizing the startup time of your application.
 
-    $ java '-XX:StartFlightRecording:method-timing=::<clinit>,report-on-exit=method-timing' -jar J2Ddemo.jar
+    $ java '-XX:StartFlightRecording:method-timing=::<clinit>,
+           report-on-exit=method-timing' -jar J2Ddemo.jar
    
                                             Method Timing
     
-    Timed Method                                                                 Invocations Average Time
-    ---------------------------------------------------------------------------- ----------- ------------
-    java.awt.GraphicsEnvironment$LocalGE.<clinit>()                                        1 39.200000 ms
-    sun.font.HBShaper.<clinit>()                                                           1 32.400000 ms
-    java2d.DemoFonts.<clinit>()                                                            1 21.400000 ms
-    java.nio.file.TempFileHelper.<clinit>()                                                1 16.200000 ms
-    java.awt.Component.<clinit>()                                                          1 14.300000 ms
-    sun.font.SunFontManager.<clinit>()                                                     1 10.900000 ms
-    sun.java2d.SurfaceData.<clinit>()                                                      1  9.480000 ms
-    java.awt.Toolkit.<clinit>()                                                            1  8.500000 ms
-    java.awt.Font.<clinit>()                                                               1  8.330000 ms
-    java.security.Security.<clinit>()                                                      1  7.570000 ms
+    Timed Method                                                   Invocations Average Time
+    -------------------------------------------------------------------------- ------------
+    java.awt.GraphicsEnvironment$LocalGE.<clinit>()                          1 39.200000 ms
+    sun.font.HBShaper.<clinit>()                                             1 32.400000 ms
+    java2d.DemoFonts.<clinit>()                                              1 21.400000 ms
+    java.nio.file.TempFileHelper.<clinit>()                                  1 16.200000 ms
+    java.awt.Component.<clinit>()                                            1 14.300000 ms
+    sun.font.SunFontManager.<clinit>()                                       1 10.900000 ms
+    sun.java2d.SurfaceData.<clinit>()                                        1  9.480000 ms
+    java.awt.Toolkit.<clinit>()                                              1  8.500000 ms
+    java.awt.Font.<clinit>()                                                 1  8.330000 ms
+    java.security.Security.<clinit>()                                        1  7.570000 ms
      ...
 
 Another example of the **report-on-exit** option is to print a summary of GC pauses when the application exits:
@@ -152,7 +154,11 @@ JDK 25 will add support for [Rate-limited sampling of Java events](https://bugs.
       channel.publish(message);
       PostMessageEvent e = new PostMessageEvent();
       if (e.shouldCommit()) {
-        e.message = message.length() < 26 ? message : message.substring(0,22) + “...”;
+        if (message.length() < 26) {
+          c.message = message;
+        } else {
+          e.message = essage.substring(0,22) + “...”;
+        }
         e.commit();
       }
     }
@@ -211,7 +217,7 @@ If an order in the order service stalls due to lock contention, a user interface
       eventThread = "Order Thread" (javaThreadId = 52613, virtual = true)
       stackTrace = [
        java.util.zip.ZipFile$CleanableResource.getInflater() line: 685
-       java.util.zip.ZipFile$ZipFileInflaterInputStream.<init>(ZipFile) line: 388
+       java.util.zip.ZipFile$ZipFileInflaterStream.<init>() line: 388
        java.util.zip.ZipFile.getInputStream(ZipEntry) line: 355
        java.util.jar.JarFile.getInputStream(ZipEntry) line: 833
        ...
