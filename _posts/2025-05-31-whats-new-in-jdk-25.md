@@ -12,7 +12,7 @@ tags: [JFR, JDK 25, Event]
 
 ## JEP 518: JFR Cooperative Sampling
 
-[JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518) reworks the method sampling mechanism in the [HotSpot JVM](https://wiki.openjdk.org/display/HotSpot). Stack walking now happens from a [safepoint](https://openjdk.org/groups/hotspot/docs/HotSpotGlossary.html#safepoint), but without the safepoint bias that [JVM TI](https://docs.oracle.com/en/java/javase/22/docs/specs/jvmti.html)-based profilers suffer from. The result is safer stack walking with [ZGC](https://wiki.openjdk.org/display/zgc/Main) and a more scalable method sampler that supports concurrent stack walking. The JEP also adds a new experimental event, **SafepointLatency**, which records the time it takes for a thread to reach a safepoint. You can enable it on the command line as follows:
+[JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518) reworks the method sampling mechanism in the [HotSpot JVM](https://wiki.openjdk.org/display/HotSpot). Stack walking now happens from a [safepoint](https://openjdk.org/groups/hotspot/docs/HotSpotGlossary.html#safepoint), but without the safepoint bias that [JVM TI](https://docs.oracle.com/en/java/javase/22/docs/specs/jvmti.html)-based profilers suffer from. The result is safer stack walking with [ZGC](https://wiki.openjdk.org/display/zgc/Main) and a more scalable method sampler that supports concurrent stack walking. The JEP also adds a new experimental event, **SafepointLatency**, which records the time it takes for a thread to reach a safepoint. The JEP has not yet been integrated, but it's out for review. If it is accepted in time for [Rampdown Phase One](https://openjdk.org/jeps/3#rdp-1), you can enable it on the command line as follows:
 
     $ java -XX:StartFlightRecording:jdk.SafepointLatency#enabled=true,filename=r.jfr
     $ jfr print --events jdk.SafepointLatency r.jfr
@@ -31,9 +31,12 @@ tags: [JFR, JDK 25, Event]
       ]
     }
 
+
+
+
 ## JEP 509: JFR CPU-Time Profiling (Experimental)
 
-[JEP 509: JFR CPU-Time Profiling (Experimental)](https://openjdk.org/jeps/509) introduces an experimental Linux-only event that uses [SIGPROF](https://www.gnu.org/software/libc/manual/html_node/Alarm-Signals.html) to record method samples. The current method sampling event, **jdk.ExecutionSample**, works on all platforms, but it only samples methods running Java code. The new **jdk.CPUTimeSample** also takes into account methods executing in native code, for example, a call to a native method using the new [FFM API](https://openjdk.org/jeps/454). The feature builds on [JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518) to ensure that stacks can be walked safely. To try out CPU-time profiling on Linux, use the following commands:
+[JEP 509: JFR CPU-Time Profiling (Experimental)](https://openjdk.org/jeps/509) introduces an experimental Linux-only event that uses [SIGPROF](https://www.gnu.org/software/libc/manual/html_node/Alarm-Signals.html) to record method samples. The current method sampling event, **jdk.ExecutionSample**, works on all platforms, but it only samples methods running Java code. The new **jdk.CPUTimeSample** event also takes into account methods executing in native code, for example, a call to a native method using the new [FFM API](https://openjdk.org/jeps/454). The feature builds on [JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518) to ensure that stacks can be walked safely. To try out CPU-time profiling on Linux, use the following commands:
 
     $ java -XX:StartFlightRecording:jdk.CPUTimeSample#enabled=true,filename=c.jfr
     $ jfr view cpu-time-hot-methods c.jfr
