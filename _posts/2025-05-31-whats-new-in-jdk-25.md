@@ -163,7 +163,7 @@ For more information about the feature, see the [CSR](https://bugs.openjdk.org/b
         if (message.length() < 26) {
           e.message = message;
         } else {
-          e.message = message.substring(0, 22) + “...”;
+          e.message = message.substring(0, 22) + "...";
         }
         e.commit();
       }
