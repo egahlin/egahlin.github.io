@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "What's new in JDK 25"
+title:  "What's new for JFR in JDK 25"
 date:   2025-05-31 23:10:24 +0200
 author:  "ErikGahlin"
 published: true
