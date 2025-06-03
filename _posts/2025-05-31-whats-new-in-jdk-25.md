@@ -67,7 +67,7 @@ The **jfr scrub** command is used to remove sensitive information, such as value
     jdk.InitialEnvironmentVariable 23/23
     jdk.InitialSystemProperty      15/15
 
-Another update to the **jfr** tool is the new option to the **print --exact** command. It prints timestamps, timespans, and memory data with full precision. For example:
+Another update to the **jfr** tool is the new **print --exact** option. It prints timestamps, timespans, and memory data with full precision. For example:
 
     $ jfr print --exact recording.jfr
     jdk.JavaMonitorWait {
