@@ -59,7 +59,7 @@ The application is [Swing-based](https://docs.oracle.com/javase/tutorial/uiswing
 
 ## Updates to the jfr command
 
-The **jfr scrub** command is used to remove sensitive information, such as values stored in system properties or environment variables, from a JFR recording file. Previously, verifying the results of the command required using the **jfr summary** command to compare files before and after scrubbing. In **JDK 25**, the **jfr scrub** command has been updated to print the number of events that were removed, making it easier to verify that sensitive information has been removed. For example:
+The **jfr scrub** command is used to remove sensitive information, such as values stored in system properties or environment variables, from a JFR recording file. Previously, verifying the results of the command required using the **jfr summary** command to compare files before and after scrubbing. In **JDK 25**, the **jfr scrub** command has been updated to print the number of events that were removed, making it easier to verify that sensitive information has been redacted. For example:
 
     $ jfr scrub --exclude-events
       jdk.InitialSystemProperty,jdk.InitialEnvironmentVariable r.jfr scrubbed.jfr
@@ -67,7 +67,7 @@ The **jfr scrub** command is used to remove sensitive information, such as value
     jdk.InitialEnvironmentVariable 23/23
     jdk.InitialSystemProperty      15/15
 
-Another update to the **jfr** tool is the new option to the **print** command: **--exact**. It prints timestamps, timespans, and memory data with full precision. For example:
+Another update to the **jfr** tool is the new option to the **print --exact** command. It prints timestamps, timespans, and memory data with full precision. For example:
 
     $ jfr print --exact recording.jfr
     jdk.JavaMonitorWait {
