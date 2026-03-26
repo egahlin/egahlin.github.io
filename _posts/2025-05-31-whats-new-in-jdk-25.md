@@ -50,7 +50,7 @@ The JEP is still out for review, but if it is integrated in time for [Rampdown P
 
 ![Method Tracer GUI]({{ site.baseurl }}/assets/method-tracer-ui.png){: class="center_85" }
 
-You can run the program like this. It requires JDK 25 or later:
+You can run the [program](https://github.com/flight-recorder/method-tracer) like this. It requires JDK 25 or later:
 
     $ git clone https://github.com/flight-recorder/method-tracer
     $ cd method-tracer 
