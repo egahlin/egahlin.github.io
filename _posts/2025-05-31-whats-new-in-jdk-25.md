@@ -50,10 +50,11 @@ The JEP is still out for review, but if it is integrated in time for [Rampdown P
 
 ![Method Tracer GUI]({{ site.baseurl }}/assets/method-tracer-ui.png){: class="center_85" }
 
-The source code will be available on GitHub when [early-access builds](https://jdk.java.net/25/) are released (build 26), allowing you to run the application as shown below:
+You can run the program like this. It requires JDK 25 or later:
 
-    $ git clone https://github.com/flight-recorder/method-tracer 
-    $ java method-tracer/MethodTracer.java
+    $ git clone https://github.com/flight-recorder/method-tracer
+    $ cd method-tracer 
+    $ java MethodTracer.java
 
 The application is [Swing-based](https://docs.oracle.com/javase/tutorial/uiswing/TOC.html) and can connect to either a local or remote application over [JMX](https://docs.oracle.com/en/java/javase/24/jmx/introduction-jmx-technology.html). It uses [JFR Event Streaming](https://openjdk.org/jeps/349) and [Remote Recording Streaming](https://egahlin.github.io/2021/05/17/remote-recording-stream.html) for data transfer. If you find issues with the JEP, please report them to the [hotspot-jfr-dev](https://mail.openjdk.org/mailman/listinfo/hotspot-jfr-dev) mailing list or send a direct message to [@ErikGahlin](https://x.com/ErikGahlin).
 
