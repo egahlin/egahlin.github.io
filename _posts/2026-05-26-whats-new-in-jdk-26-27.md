@@ -7,7 +7,11 @@ published: true
 tags: [JFR, JDK 26, JDK 27]
 ---
 
-JDK 25 introduced three JFR-related JEPs: [JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518), [JEP 509: JFR CPU-Time Profiling (Experimental)](https://openjdk.org/jeps/509), and [JEP 520: JFR Method Timing & Tracing](https://openjdk.org/jeps/520). In JDK 26, the focus shifted toward maintenance and bug fixes, some of which were also backported to JDK 25. That said, a few enhancements were added in JDK 26.
+JDK 25 introduced three JFR-related JEPs: [JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518), [JEP 509: JFR CPU-Time Profiling (Experimental)](https://openjdk.org/jeps/509), and [JEP 520: JFR Method Timing & Tracing](https://openjdk.org/jeps/520). In JDK 26, the focus shifted to maintenance and bug fixes, some of which were also backported to JDK 25. Still, a few enhancements were added in JDK 26, and a new JEP was introduced in JDK 27.
+
+In JDK 26, the focus shifted toward maintenance and bug fixes, some of which were also backported to JDK 25. That said, a few enhancements were added in JDK 26 and a new JEP in JDK 27.
+
+## What’s New in JDK 26
 
 The `jdk.ClassDefine` event now has a `source` field that contains the location from which the class was loaded. This is useful for auditing purposes or for determining from which JAR file a class was loaded.
 
@@ -72,9 +76,7 @@ Here is what the event looks like:
 
 JDK 27 introduces a new help option: `-XX:FlightRecorderOptions:help`. This option describes all available Flight Recorder options for a particular JDK release and includes example command lines.
 
-There is also a new JEP under development, [JEP 536: JFR In-Process Data Redaction](https://openjdk.org/jeps/536), which can redact sensitive information in three events (`jdk.JVMInformation`, `jdk.InitialEnvironmentVariable`, and `jdk.InitialSystemProperty`) before the data is written to JFR buffers.
-
-Since JDK 21, a `jfr scrub` command has existed to remove these events if they contain passwords, tokens, or other sensitive information:
+There is also a new JEP under development, [JEP 536: JFR In-Process Data Redaction](https://openjdk.org/jeps/536), which can redact sensitive information in three events (`jdk.JVMInformation`, `jdk.InitialEnvironmentVariable`, and `jdk.InitialSystemProperty`) before the data is written to JFR buffers. Since JDK 21, a `jfr scrub` command has existed to remove these events if they contain passwords, tokens, or other sensitive information:
 
     $ jfr scrub JVMInformation,InitialEnvironmentVariable,jdk.InitialSystemProperty recording.jfr
 
