@@ -9,8 +9,6 @@ tags: [JFR, JDK 26, JDK 27]
 
 JDK 25 introduced three JFR-related JEPs: [JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518), [JEP 509: JFR CPU-Time Profiling (Experimental)](https://openjdk.org/jeps/509), and [JEP 520: JFR Method Timing & Tracing](https://openjdk.org/jeps/520). In JDK 26, the focus shifted to maintenance and bug fixes, some of which were also backported to JDK 25. Still, a few enhancements were added in JDK 26, and a new JEP was introduced in JDK 27.
 
-In JDK 26, the focus shifted toward maintenance and bug fixes, some of which were also backported to JDK 25. That said, a few enhancements were added in JDK 26 and a new JEP in JDK 27.
-
 ## What’s New in JDK 26
 
 The `jdk.ClassDefine` event now has a `source` field that contains the location from which the class was loaded. This is useful for auditing purposes or for determining from which JAR file a class was loaded.
