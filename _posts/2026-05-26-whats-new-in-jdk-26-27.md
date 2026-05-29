@@ -7,7 +7,7 @@ published: true
 tags: [JFR, JDK 26, JDK 27]
 ---
 
-**JDK 25** introduced three JFR-related JEPs: [JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518), [JEP 509: JFR CPU-Time Profiling (Experimental)](https://openjdk.org/jeps/509), and [JEP 520: JFR Method Timing & Tracing](https://openjdk.org/jeps/520). In JDK 26, the focus shifted to maintenance and bug fixes, some of which were also backported to **JDK 25**. Still, a few enhancements were added in **JDK 26**, and a new JEP was introduced in *JDK 27*.
+**JDK 25** introduced three JFR-related JEPs: [JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518), [JEP 509: JFR CPU-Time Profiling (Experimental)](https://openjdk.org/jeps/509), and [JEP 520: JFR Method Timing & Tracing](https://openjdk.org/jeps/520). In JDK 26, the focus shifted to maintenance and bug fixes, some of which were also backported to **JDK 25**. Still, a few enhancements were added in **JDK 26**, and a new JEP was introduced in **JDK 27**.
 
 ## What’s New in JDK 26
 
@@ -92,7 +92,7 @@ For example, you might start an application with JFR enabled like below:
         -jar application.jar \
         --dbpassword ANOTHER_SECRET_PASSWORD --verbose
 
-If you print the contents of the recording, you will see:
+If you print the contents of the recording, you will see sensitive information being replaced by `[REDACTED]`:
 
     $ jfr print \
         --events JVMInformation,InitialSystemProperty,InitialEnvironmentVariable \
@@ -134,7 +134,7 @@ If you have tokens, passwords, or other sensitive values that are not matched by
     -XX:FlightRecorderOptions:redact-key=+filter1...
     -XX:FlightRecorderOptions:redact-argument=+filter2...
 
-You can view the default filters being used and more information about the option using `-XX:FlightRecorderOptions:help`.
+You can view the default filters and learn more about the `redact-key` and `redact-argument` options by using `-XX:FlightRecorderOptions:help`.
 
 Also for **JDK 27**, a new field `hostMemoryUsage` was added to the `jdk.ContainerMemoryUsage` event that describes the amount of physical memory currently allocated in the host system.
 
