@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "JDK 26-27: What’s New in JFR"
+title:  "JDK 26-27: What’s new in JFR"
 date:   2026-05-26 16:30:24 +0200
 author:  "ErikGahlin"
 published: true
@@ -9,7 +9,7 @@ tags: [JFR, JDK 26, JDK 27]
 
 **JDK 25** introduced three JFR-related JEPs: [JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518), [JEP 509: JFR CPU-Time Profiling (Experimental)](https://openjdk.org/jeps/509), and [JEP 520: JFR Method Timing & Tracing](https://openjdk.org/jeps/520). In JDK 26, the focus shifted to maintenance and bug fixes, some of which were also backported to **JDK 25**. Still, a few enhancements were added in **JDK 26**, and a new JEP was introduced in **JDK 27**.
 
-## What’s New in JDK 26
+## What’s new in JDK 26
 
 The `jdk.ClassDefine` event now has a `source` field that contains the location from which the class was loaded. This is useful for auditing purposes or for determining from which JAR file a class was loaded.
 
@@ -70,7 +70,7 @@ Here is what the event looks like:
       tableCleanup = 0 s
     }
 
-## What to Expect from JDK 27
+## What to expect from JDK 27
 
 **JDK 27** introduces a new help option: `-XX:FlightRecorderOptions:help`. This option describes all available Flight Recorder options for a particular JDK release and includes example command lines.
 
@@ -138,7 +138,7 @@ You can view the default filters and learn more about the `redact-key` and `reda
 
 Also for **JDK 27**, a new field `hostMemoryUsage` was added to the `jdk.ContainerMemoryUsage` event that describes the amount of physical memory currently allocated in the host system.
 
-## Value Events
+## Value events
 
 In parallel with this work, several JFR issues related to the upcoming [JEP 401: Value Classes and Objects (Preview)](https://openjdk.org/jeps/401) were addressed.
 
