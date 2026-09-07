@@ -32,30 +32,34 @@
 }
 
 // Rouge token colours matching the Base16 Dark palette used on morling.dev.
+// Plainwhite ships a Solarized Rouge stylesheet, so reset any token class that
+// is not part of the Base16 palette before applying the colours below.
+:where(.post) .highlight span { color: #d0d0d0 !important; }
+
 .highlight .c,
 .highlight .ch,
 .highlight .cd,
 .highlight .c1,
 .highlight .cm,
 .highlight .cpf,
-.highlight .cs { color: #a0a0a0; } // comments
+.highlight .cs { color: #a0a0a0 !important; } // comments
 
-.highlight .cp { color: #f4bf75; } // preprocessor directives
+.highlight .cp { color: #f4bf75 !important; } // preprocessor directives
 
 .highlight .k,
 .highlight .kn,
 .highlight .kp,
 .highlight .kr,
-.highlight .kv { color: #aa759f; } // keywords
+.highlight .kv { color: #aa759f !important; } // keywords
 
 .highlight .kc,
 .highlight .kd,
-.highlight .kt { color: #d28445; } // constants and types
+.highlight .kt { color: #d28445 !important; } // constants and types
 
 .highlight .nc,
 .highlight .nn,
 .highlight .no,
-.highlight .nt { color: #f4bf75; } // class and tag names
+.highlight .nt { color: #f4bf75 !important; } // class and tag names
 
 .highlight .s,
 .highlight .s1,
@@ -67,12 +71,12 @@
 .highlight .sd,
 .highlight .sh,
 .highlight .ss,
-.highlight .sx { color: #90a959; } // strings
+.highlight .sx { color: #90a959 !important; } // strings
 
-.highlight .sr { color: #75b5aa; } // regular expressions
+.highlight .sr { color: #75b5aa !important; } // regular expressions
 
 .highlight .se,
-.highlight .si { color: #8f5536; } // string escapes and interpolation
+.highlight .si { color: #8f5536 !important; } // string escapes and interpolation
 
 .highlight .m,
 .highlight .mb,
@@ -80,13 +84,13 @@
 .highlight .mh,
 .highlight .mi,
 .highlight .mo,
-.highlight .mx { color: #90a959; } // numbers
+.highlight .mx { color: #90a959 !important; } // numbers
 
 .highlight .na,
-.highlight .nf { color: #6a9fb5; } // attributes and functions
+.highlight .nf { color: #6a9fb5 !important; } // attributes and functions
 
 .highlight .o,
 .highlight .ow,
 .highlight .p,
 .highlight .pi,
-.highlight .w { color: #d0d0d0; } // operators, punctuation, and text
+.highlight .w { color: #d0d0d0 !important; } // operators, punctuation, and text
