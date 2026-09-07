@@ -8,44 +8,54 @@
 // Dark syntax highlighting for Jekyll/Rouge code blocks.
 // Keep this after the theme imports so it overrides the theme defaults.
 :not(pre) > code {
-    background: #1e1e1e;
+    background: #151515;
     border-radius: 4px;
-    color: #f8f8f2;
+    color: #d0d0d0;
     padding: 0.15em 0.35em;
 }
 
 .post .highlighter-rouge,
 .post .highlight,
 .post pre.highlight {
-    background-color: #000;
+    background-color: #151515;
     border-radius: 6px;
-    color: #f8f8f2;
+    color: #d0d0d0;
     overflow-x: auto;
     padding: 1rem;
 }
 
 .post .highlight pre {
-    background-color: #000;
+    background-color: #151515;
     color: inherit;
     margin: 0;
     padding: 0;
 }
 
-// Rouge token colours (inspired by Dracula).
+// Rouge token colours matching the Base16 Dark palette used on morling.dev.
 .highlight .c,
+.highlight .ch,
+.highlight .cd,
 .highlight .c1,
 .highlight .cm,
-.highlight .cp,
-.highlight .cs { color: #6272a4; } // comments
+.highlight .cpf,
+.highlight .cs { color: #a0a0a0; } // comments
+
+.highlight .cp { color: #f4bf75; } // preprocessor directives
 
 .highlight .k,
-.highlight .kc,
-.highlight .kd,
 .highlight .kn,
 .highlight .kp,
 .highlight .kr,
-.highlight .kt,
-.highlight .ow { color: #ff79c6; } // keywords and types
+.highlight .kv { color: #aa759f; } // keywords
+
+.highlight .kc,
+.highlight .kd,
+.highlight .kt { color: #d28445; } // constants and types
+
+.highlight .nc,
+.highlight .nn,
+.highlight .no,
+.highlight .nt { color: #f4bf75; } // class and tag names
 
 .highlight .s,
 .highlight .s1,
@@ -53,28 +63,30 @@
 .highlight .sa,
 .highlight .sb,
 .highlight .sc,
+.highlight .dl,
 .highlight .sd,
-.highlight .se,
 .highlight .sh,
-.highlight .si,
-.highlight .sr,
-.highlight .ss { color: #f1fa8c; } // strings
+.highlight .ss,
+.highlight .sx { color: #90a959; } // strings
+
+.highlight .sr { color: #75b5aa; } // regular expressions
+
+.highlight .se,
+.highlight .si { color: #8f5536; } // string escapes and interpolation
 
 .highlight .m,
 .highlight .mb,
 .highlight .mf,
 .highlight .mh,
 .highlight .mi,
-.highlight .mo { color: #bd93f9; } // numbers
+.highlight .mo,
+.highlight .mx { color: #90a959; } // numbers
 
 .highlight .na,
-.highlight .nb,
-.highlight .nc,
-.highlight .nf,
-.highlight .nn,
-.highlight .nv,
-.highlight .nx,
-.highlight .py { color: #50fa7b; } // names
+.highlight .nf { color: #6a9fb5; } // attributes and functions
 
 .highlight .o,
-.highlight .p { color: #f8f8f2; } // operators and punctuation
+.highlight .ow,
+.highlight .p,
+.highlight .pi,
+.highlight .w { color: #d0d0d0; } // operators, punctuation, and text
