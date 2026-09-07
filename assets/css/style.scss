@@ -7,6 +7,13 @@
 
 // Dark syntax highlighting for Jekyll/Rouge code blocks.
 // Keep this after the theme imports so it overrides the theme defaults.
+.post code.highlighter-rouge {
+    background: transparent !important;
+    border-radius: 0 !important;
+    color: inherit !important;
+    padding: 0 !important;
+}
+
 .post .highlight,
 .post pre.highlight {
     background-color: #151515;
