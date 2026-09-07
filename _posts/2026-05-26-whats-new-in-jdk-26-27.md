@@ -9,7 +9,7 @@ tags: [JFR, JDK 26, JDK 27]
 
 In **JDK 26**, the focus shifted to maintenance and bug fixes, some of which were also backported to **JDK 25**. Still, a few enhancements were added in **JDK 26**, and a new JEP was introduced in **JDK 27**.
 
-## What’s new in JDK 26
+## JDK 26
 
 The `jdk.ClassDefine` event now has a `source` field that contains the location from which the class was loaded. This is useful for auditing purposes or for determining from which JAR file a class was loaded.
 
