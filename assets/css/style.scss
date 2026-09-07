@@ -14,17 +14,18 @@
     padding: 0.15em 0.35em;
 }
 
-.highlight,
-pre.highlight {
-    background: #1e1e1e;
+.post .highlighter-rouge,
+.post .highlight,
+.post pre.highlight {
+    background-color: #000;
     border-radius: 6px;
     color: #f8f8f2;
     overflow-x: auto;
     padding: 1rem;
 }
 
-.highlight pre {
-    background: transparent;
+.post .highlight pre {
+    background-color: #000;
     color: inherit;
     margin: 0;
     padding: 0;
