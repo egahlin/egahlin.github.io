@@ -148,27 +148,29 @@ For more information about the feature, see the [CSR](https://bugs.openjdk.org/b
 
 **JDK 25** will add support for [Rate-limited sampling of Java events](https://bugs.openjdk.org/browse/JDK-8351594). For example, you may want to track data that is posted to a queue at a very high frequency. Recording every event may result in the recording file becoming filled with queue-related events, potentially displacing other important data. By annotating your event with **@Throttle**, you can set an upper limit on the number of events per time unit. For example:
 
-    @Throttle(“300/s”)
-    @Label(“Post Message”)
-    @Name(“example.PostMessage”)
-    @Category(“Message Queue”)
-    static class PostMessageEvent extends Event {
-      @Label(“Message”)
-      String message; 
+```java
+@Throttle(“300/s”)
+@Label(“Post Message”)
+@Name(“example.PostMessage”)
+@Category(“Message Queue”)
+static class PostMessageEvent extends Event {
+  @Label(“Message”)
+  String message;
+}
+
+void postMessage(Channel channel, String message) {
+  channel.publish(message);
+  PostMessageEvent e = new PostMessageEvent();
+  if (e.shouldCommit()) {
+    if (message.length() < 26) {
+      e.message = message;
+    } else {
+      e.message = message.substring(0, 22) + "...";
     }
-    
-    void postMessage(Channel channel, String message) {
-      channel.publish(message);
-      PostMessageEvent e = new PostMessageEvent();
-      if (e.shouldCommit()) {
-        if (message.length() < 26) {
-          e.message = message;
-        } else {
-          e.message = message.substring(0, 22) + "...";
-        }
-        e.commit();
-      }
-    }
+    e.commit();
+  }
+}
+```
 
 Event objects that are throttled cannot be reused because they must hold their sample state between a call to shouldCommit() and commit(). Like other event settings, throttling can be controlled from the command line. The following example shows how throttling can be disabled so that all events are emitted:
 
@@ -180,34 +182,38 @@ Event objects that are throttled cannot be reused because they must hold their s
 
 For example, to trace requests or transactions in a system, a trace event can be created to provide context.
 
-    @Label("Trace")
-    @Name("com.example.Trace")
-    class TraceEvent extends Event {
-      @Label("ID")
-      @Contextual
-      String id;
+```java
+@Label("Trace")
+@Name("com.example.Trace")
+class TraceEvent extends Event {
+  @Label("ID")
+  @Contextual
+  String id;
 
-      @Label("Name")
-      @Contextual
-      String name;
-    }
+  @Label("Name")
+  @Contextual
+  String name;
+}
+```
 
 To track details within an order service, an order event can be created where only the order ID provides context.
 
-    @Label("Order")
-    @Name("com.example.Order")
-    class OrderEvent extends Event {
-      @Label("Order ID")
-      @Contextual
-      long id;
-    
-      @Label("Order Date")
-      @Timestamp(Timestamp.MILLISECONDS_SINCE_EPOCH)
-      long date;
-    
-      @Label("Payment Method")
-      String paymentMethod;
-    }
+```java
+@Label("Order")
+@Name("com.example.Order")
+class OrderEvent extends Event {
+  @Label("Order ID")
+  @Contextual
+  long id;
+
+  @Label("Order Date")
+  @Timestamp(Timestamp.MILLISECONDS_SINCE_EPOCH)
+  long date;
+
+  @Label("Payment Method")
+  String paymentMethod;
+}
+```
 
 If an order in the order service stalls due to lock contention, a user interface can display contextual information together with the **JavaMonitorEnter** event to simplify troubleshooting, for example:
 

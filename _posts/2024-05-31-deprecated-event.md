@@ -13,32 +13,34 @@ By detecting the use of a deprecated method early in the development process, th
 
 To demonstrate how the event works, two classes will be used, both containing invocations to methods deprecated for removal.
 
-    public class API {
-      public static void enableLogging(boolean enable) {
-        AccessController.doPrivileged(new PrivilegedAction<Void>() {
-          public Void run() {
-            System.setProperty("log", String.valueOf(enable));
-            return null;
-          }
-        });
+```java
+public class API {
+  public static void enableLogging(boolean enable) {
+    AccessController.doPrivileged(new PrivilegedAction<Void>() {
+      public Void run() {
+        System.setProperty("log", String.valueOf(enable));
+        return null;
       }
-      public static void runTask(Runnable task) {
-        try {
-          task.run();
-        } catch (ThreadDeath td) {
-          System.out.println("Task stopped.");
-        }
-      }
+    });
+  }
+  public static void runTask(Runnable task) {
+    try {
+      task.run();
+    } catch (ThreadDeath td) {
+      System.out.println("Task stopped.");
     }
-    
-    public class Service {
-      public static void log(String message) {
-        String shouldLog = System.getProperty("log", "true");
-        if (new Boolean("log")) {
-          System.out.print(message);
-        }
-      }
+  }
+}
+
+public class Service {
+  public static void log(String message) {
+    String shouldLog = System.getProperty("log", "true");
+    if (new Boolean("log")) {
+      System.out.print(message);
     }
+  }
+}
+```
 
 If the above classes are compiled, three warnings are printed:
 
@@ -59,12 +61,14 @@ These warnings should be fixed, but if the classes are in a library, perhaps com
     $ jar cf library.jar *.class
     $ rm *.class *.java
     
-    public class Application {
-      public static void main(String... args) throws Exception {
-        API.enableLogging(true);
-        Class.forName("Service").getMethod("log").invoke(null, "Program started.");
-      }
-    }
+```java
+public class Application {
+  public static void main(String... args) throws Exception {
+    API.enableLogging(true);
+    Class.forName("Service").getMethod("log").invoke(null, "Program started.");
+  }
+}
+```
 
 The deprecated event is enabled by default, so no configuration is needed besides starting JFR:
 
@@ -126,4 +130,3 @@ To record invocations to methods where **@Deprecated(forRemoval=false)** has bee
     $ java -XX:StartFlightRecording:jdk.DeprecatedInvocation#level=all,filename=recording.jfr -cp library.jar Application.java 
 
 I hope this blog post has provided a deeper understanding of how the deprecated event works and its limitations. The greatest benefit of the event will likely be realized in systems that already continuously monitor the JVM. Now, they will be able to detect the use of deprecated methods as well.
-

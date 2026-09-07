@@ -118,24 +118,26 @@ The **configure** command can also change settings of individual events. This ca
 
 Here is an example of a user-defined event:
 
-    @Name("com.company.HttpGetRequest")
-    @Label("HTTP GET Request")
-    @Category("HTTP")
-    @Enabled(false)
-    @StackTrace(false)
-    @Threshold("0 ms")
-    public class HttpGetRequest extends jdk.jfr.Event {
-      @Label("Request URI")
-      String uri;
-    }
-    
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-     HttpGetRequest request = new HttpGetRequest();
-     request.begin();
-     request.uri = req.getRequestURI();
-     ...
-     request.commit();
-    }
+```java
+@Name("com.company.HttpGetRequest")
+@Label("HTTP GET Request")
+@Category("HTTP")
+@Enabled(false)
+@StackTrace(false)
+@Threshold("0 ms")
+public class HttpGetRequest extends jdk.jfr.Event {
+  @Label("Request URI")
+  String uri;
+}
+
+protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+  HttpGetRequest request = new HttpGetRequest();
+  request.begin();
+  request.uri = req.getRequestURI();
+  ...
+  request.commit();
+}
+```
     
 To add the event to a configuration file, specify the event name, followed by "#" and a key-value pair:
 

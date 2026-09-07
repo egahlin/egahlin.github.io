@@ -13,26 +13,32 @@ In JDK 14, [API support ](https://openjdk.java.net/jeps/349) was added to stream
 
 #### 1. Passive, in process:
 
-    try (EventStream stream = EventStream.openRepository()) {
-        stream.onEvent("jdk.JavaMonitorEnter", System.out::println),
-        stream.start();
-    }
+```java
+try (EventStream stream = EventStream.openRepository()) {
+    stream.onEvent("jdk.JavaMonitorEnter", System.out::println),
+    stream.start();
+}
+```
 
 #### 2. Passive, out of process:
     
-    Path path = Path.of("/repository/2021_05_16_09_48_31_60185");
-    try (EventStream stream = EventStream.openRepository(path) {
-        stream.onEvent("jdk.JavaMonitorEnter", System.out::println),
-        stream.start();
-    }
+```java
+Path path = Path.of("/repository/2021_05_16_09_48_31_60185");
+try (EventStream stream = EventStream.openRepository(path) {
+    stream.onEvent("jdk.JavaMonitorEnter", System.out::println),
+    stream.start();
+}
+```
 
 #### 3. Active, in process:
 
-    try (RecordingStream stream = new RecordingStream()) {
-        stream.enable("jdk.JavaMonitorEnter").withStackTrace();
-        stream.onEvent("jdk.JavaMonitorEnter", System.out::println),
-        stream.start();
-    }
+```java
+try (RecordingStream stream = new RecordingStream()) {
+    stream.enable("jdk.JavaMonitorEnter").withStackTrace();
+    stream.onEvent("jdk.JavaMonitorEnter", System.out::println),
+    stream.start();
+}
+```
 
 Active here means that the recording lifecycle and event configuration can be controlled by the stream, as seen in the third code snippet with the enabled method. The above APIs work for many scenarios, but not when there is a need to:
 
@@ -45,20 +51,22 @@ In JDK 16, this restriction was lifted and JFR can now be used to monitor a remo
 
 #### 4. Active, out of process (and over the network)
 
-    String host = "com.example";
-    int port = 7091;
- 
-    String url = "service:jmx:rmi:///jndi/rmi://" + host + ":" + port + "/jmxrmi";
- 
-    JMXServiceURL u = new JMXServiceURL(url);
-    JMXConnector c = JMXConnectorFactory.connect(u);
-    MBeanServerConnection connection = c.getMBeanServerConnection();
+```java
+String host = "com.example";
+int port = 7091;
 
-    try (RemoteRecordingStream stream = new RemoteRecordingStream(connection)) {
-        stream.enabled("jdk.JavaMonitorEnter").withStackTrace();
-        stream.onEvent("jdk.JavaMonitorEnter", System.out::println),
-        stream.start();
-    }
+String url = "service:jmx:rmi:///jndi/rmi://" + host + ":" + port + "/jmxrmi";
+
+JMXServiceURL u = new JMXServiceURL(url);
+JMXConnector c = JMXConnectorFactory.connect(u);
+MBeanServerConnection connection = c.getMBeanServerConnection();
+
+try (RemoteRecordingStream stream = new RemoteRecordingStream(connection)) {
+    stream.enabled("jdk.JavaMonitorEnter").withStackTrace();
+    stream.onEvent("jdk.JavaMonitorEnter", System.out::println),
+    stream.start();
+}
+```
 
 The implementation of RemoteRecordingStream reads bytes of data from the [FlightRecorderMXBean::readStream(long)](https://docs.oracle.com/en/java/javase/16/docs/api/jdk.management.jfr/jdk/management/jfr/FlightRecorderMXBean.html#readStream(long)) method and writes it to disk locally, in chunks, similar to what the JVM does on the remote host. Another thread then parses the data on disk and dispatches events to the onEvent handlers. Once every second, new data becomes available to read.
 
@@ -78,7 +86,9 @@ Without knowledge of the event types, it's not possible to determine the field l
 
 To remedy the situation, a new method was added to the [EventStream](https://docs.oracle.com/en/java/javase/16/docs/api/jdk.jfr/jdk/jfr/consumer/EventStream.html) interface:
 
-    void onMetadata(MetadataEvent);
+```java
+void onMetadata(MetadataEvent);
+```
     
 The [MetadataEvent](https://docs.oracle.com/en/java/javase/16/docs/api/jdk.jfr/jdk/jfr/consumer/MetadataEvent.html) carries a list of all registered event types and the two configurations, "default" and "profile", that comes with the JDK. The MetadataEvent is sent before any onEvent handler is invoked. If a new event type is registered/unregistered, an updated MetadataEvent is sent.
 
@@ -108,6 +118,5 @@ Usage:
 [Javadoc MetadataEvent](https://docs.oracle.com/en/java/javase/16/docs/api/jdk.jfr/jdk/jfr/consumer/MetadataEvent.html)
 
 [Health Report](https://github.com/flight-recorder/health-report)
-
 
 

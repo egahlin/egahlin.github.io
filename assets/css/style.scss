@@ -1,11 +1,79 @@
 ---
 ---
 
-code {
-  color: black;
-}
-
 @import "plain";
 
 @import "posts";
 
+// Dark syntax highlighting for Jekyll/Rouge code blocks.
+// Keep this after the theme imports so it overrides the theme defaults.
+:not(pre) > code {
+    background: #1e1e1e;
+    border-radius: 4px;
+    color: #f8f8f2;
+    padding: 0.15em 0.35em;
+}
+
+.highlight,
+pre.highlight {
+    background: #1e1e1e;
+    border-radius: 6px;
+    color: #f8f8f2;
+    overflow-x: auto;
+    padding: 1rem;
+}
+
+.highlight pre {
+    background: transparent;
+    color: inherit;
+    margin: 0;
+    padding: 0;
+}
+
+// Rouge token colours (inspired by Dracula).
+.highlight .c,
+.highlight .c1,
+.highlight .cm,
+.highlight .cp,
+.highlight .cs { color: #6272a4; } // comments
+
+.highlight .k,
+.highlight .kc,
+.highlight .kd,
+.highlight .kn,
+.highlight .kp,
+.highlight .kr,
+.highlight .kt,
+.highlight .ow { color: #ff79c6; } // keywords and types
+
+.highlight .s,
+.highlight .s1,
+.highlight .s2,
+.highlight .sa,
+.highlight .sb,
+.highlight .sc,
+.highlight .sd,
+.highlight .se,
+.highlight .sh,
+.highlight .si,
+.highlight .sr,
+.highlight .ss { color: #f1fa8c; } // strings
+
+.highlight .m,
+.highlight .mb,
+.highlight .mf,
+.highlight .mh,
+.highlight .mi,
+.highlight .mo { color: #bd93f9; } // numbers
+
+.highlight .na,
+.highlight .nb,
+.highlight .nc,
+.highlight .nf,
+.highlight .nn,
+.highlight .nv,
+.highlight .nx,
+.highlight .py { color: #50fa7b; } // names
+
+.highlight .o,
+.highlight .p { color: #f8f8f2; } // operators and punctuation
