@@ -21,4 +21,11 @@ title: Documentation
 
 [JEP 349: JFR Event Streaming](https://openjdk.java.net/jeps/349)
 
+[JEP 509: JFR CPU-Time Profiling (Experimental)](https://openjdk.org/jeps/509)
+
+[JEP 518: JFR Cooperative Sampling](https://openjdk.org/jeps/518)
+
+[JEP 520: JFR Method Timing & Tracing](https://openjdk.org/jeps/520)
+
+[JEP 536: JFR In-Process Data Redaction](https://openjdk.org/jeps/536)
 
